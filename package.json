@@ -1,0 +1,36 @@
+{
+  "name": "@devtalles/community-blog",
+  "version": "1.0.0",
+  "description": "Blog for DevTalles community.",
+  "scripts": {
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "keywords": [
+    "blog",
+    "devtalles",
+    "community",
+    "typescript",
+    "nodejs",
+    "pnpm",
+    "express",
+    "nestjs",
+    "angular"
+  ],
+  "author": "Juansecu",
+  "homepage": "https://github.com/Juansecu/DevTalles-Community-Blog#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juansecu/DevTalles-Community-Blog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Juansecu/DevTalles-Community-Blog/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.18.0",
+    "pnpm": ">=10.15.0"
+  },
+  "engineStrict": true,
+  "packageManager": "pnpm@10.15.0"
+}

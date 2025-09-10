@@ -1,0 +1,72 @@
+{
+  "name": "@devtalles/community-blog-frontend",
+  "description": "Frontend for DevTalles community blog.",
+  "version": "1.0.0",
+  "author": "Juansecu",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "lint": "eslint \"src/**/*.{scss,json,ts}\""
+  },
+  "keywords": [
+    "blog",
+    "devtalles",
+    "community",
+    "typescript",
+    "nodejs",
+    "pnpm",
+    "angular"
+  ],
+  "homepage": "https://github.com/Juansecu/DevTalles-Community-Blog#readme",
+  "repository": {
+    "directory": "frontend",
+    "type": "git",
+    "url": "git+https://github.com/Juansecu/DevTalles-Community-Blog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Juansecu/DevTalles-Community-Blog/issues"
+  },
+  "engines": {
+    "node": ">=22.18.0",
+    "pnpm": ">=10.15.0"
+  },
+  "engineStrict": true,
+  "packageManager": "pnpm@10.15.0",
+  "dependencies": {
+    "@angular/common": "^20.2.0",
+    "@angular/compiler": "^20.2.0",
+    "@angular/core": "^20.2.0",
+    "@angular/forms": "^20.2.0",
+    "@angular/platform-browser": "^20.2.0",
+    "@angular/router": "^20.2.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.2.2",
+    "@angular/cli": "^20.2.2",
+    "@angular/compiler-cli": "^20.2.0",
+    "@eslint/css": "^0.11.0",
+    "@eslint/js": "^9.35.0",
+    "@eslint/json": "^0.13.2",
+    "@types/jasmine": "~5.1.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.4.0",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.43.0"
+  }
+}
