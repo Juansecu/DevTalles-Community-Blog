@@ -1,0 +1,32 @@
+name: Check Application Issues
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - development
+      - main
+  workflow_call:
+
+jobs:
+  check-linter-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          cache: 'pnpm'
+          node-version: '22.18.0'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check linter issues
+        run: pnpm run lint
+      - name: Build application
+        uses: ./.github/workflows/build-application.yml

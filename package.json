@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Blog for DevTalles community.",
   "scripts": {
+    "build": "pnpm -r build",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test"
   },
