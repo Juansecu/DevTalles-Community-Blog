@@ -28,5 +28,6 @@ jobs:
         run: pnpm install
       - name: Check linter issues
         run: pnpm run lint
-      - name: Build application
-        uses: ./.github/workflows/build-application.yml
+
+  build-application:
+    uses: ./.github/workflows/build-application.yml
