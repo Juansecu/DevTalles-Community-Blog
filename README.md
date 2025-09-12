@@ -4,7 +4,7 @@ Blog for DevTalles community.
 
 ## Requirements
 
-- **[Node.js](https://nodejs.org/) -** (v22.18 or higher)
+- **[Node.js](https://nodejs.org/) -** (v22.18.0 or higher)
 - **[pnpm](https://pnpm.io/) -** (v10.15.0 or higher)
 
 ### For Development
