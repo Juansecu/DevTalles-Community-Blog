@@ -6,6 +6,7 @@ Blog for DevTalles community.
 
 - **[Node.js](https://nodejs.org/) -** (v22.18.0 or higher)
 - **[pnpm](https://pnpm.io/) -** (v10.15.0 or higher)
+- **[Discord Application (for authenticating users via Discord)](https://github.com/Juansecu/DevTalles-Community-Blog/wiki/setting-up-discord-oauth2)**
 
 ### For Development
 
