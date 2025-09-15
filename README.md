@@ -7,6 +7,8 @@ Blog for DevTalles community.
 - **[Node.js](https://nodejs.org/) -** (v22.18.0 or higher)
 - **[pnpm](https://pnpm.io/) -** (v10.15.0 or higher)
 - **[Discord Application (for authenticating users via Discord)](https://github.com/Juansecu/DevTalles-Community-Blog/wiki/setting-up-discord-oauth2)**
+- **[Cloudflare Turnstile (for secure access to the backend)](https://developers.cloudflare.com/turnstile/get-started/)**
+- **[Terraform (for deploying necessary infrastructure to Cloudflare)](https://developer.hashicorp.com/terraform)**
 
 ### For Development
 
@@ -20,6 +22,10 @@ Blog for DevTalles community.
 This project uses a monorepo structure with two main directories:
 `backend` and `frontend`. Each directory contains its own `README.md` file
 with specific requirements and setup instructions.
+
+Before starting, if you haven't created a Cloudflare Turnstile widget yet,
+please follow the instructions in this repository's wiki
+about [setting up Cloudflare Turnstile using Terraform templates](https://github.com/Juansecu/DevTalles-Community-Blog/wiki/setting-up-cloudflare-turnstile#using-terraform-templates-recommended).
 
 To set up the entire project, follow these steps:
 
