@@ -1,0 +1,39 @@
+name: Deploy Infrastructure Templates
+
+on:
+  pull_request:
+    branches:
+      - development
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-cloudflare-templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Initialize Terraform environment
+        working-directory: infrastructure/templates/cloudflare-templates
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET_NAME }}" \
+            -backend-config="endpoints={\"s3\": \"https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com\"}"
+      - name: Deploy Cloudflare templates
+        working-directory: infrastructure/templates/cloudflare-templates
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_LOG: INFO
+          TF_VAR_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_turnstile_domains: ${{ secrets.CLOUDFLARE_TURNSTILE_DOMAINS }}
+          TF_VAR_turnstile_mode: ${{ secrets.CLOUDFLARE_TURNSTILE_MODE }}
+          TF_VAR_turnstile_name: ${{ secrets.CLOUDFLARE_TURNSTILE_NAME }}
+        run: terraform apply -auto-approve

@@ -2,6 +2,10 @@
 *.idea/
 *.vscode/
 
+# Terraform files
+**/.terraform
+**/terraform.tfstate*
+
 # Logs
 logs
 *.log

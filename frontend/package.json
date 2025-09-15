@@ -6,6 +6,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "prebuild": "node set-environment-variables.mjs",
+    "prestart": "node set-environment-variables.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -61,6 +63,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "globals": "^16.4.0",
     "jasmine-core": "~5.9.0",
+    "joi": "^18.0.1",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
