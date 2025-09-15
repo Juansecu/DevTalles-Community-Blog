@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  devtalles-community-blog-backend:
+    image: devtallers-community-blog-backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: devtallers-community-blog-backend
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:-3000}
+      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
