@@ -7,7 +7,7 @@ Backend for DevTalles community blog.
 - **[Node.js](https://nodejs.org/) -** (v22.18 or higher)
 - **[pnpm](https://pnpm.io/) -** (v10.15.0 or higher)
 - **[PostgreSQL](https://www.postgresql.org/) -** (v17 or higher)
-- **Environment variables**
+- **Environment variables:**
 
     | Variable            | Type   | Description                                                                      | Required | Default     | Example                 |
     |---------------------|--------|----------------------------------------------------------------------------------|----------|-------------|-------------------------|
