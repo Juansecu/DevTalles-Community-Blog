@@ -1,1 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --black: #000;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+body {
+  background: linear-gradient(to right, #2b1d52, #1c1137);
+}
+
+main {
+  margin: 0 auto;
+}
+
+/* sm */
+@media (min-width: 640px) {
+  main {
+    max-width: 640px;
+  }
+}
+
+/* md */
+@media (min-width: 768px) {
+  main {
+    max-width: 768px;
+  }
+}
+
+/* lg */
+@media (min-width: 1024px) {
+  main {
+    max-width: 1024px;
+  }
+}
+
+/* xl */
+@media (min-width: 1280px) {
+  main {
+    max-width: 1200px;
+  }
+}
+
+/* 2xl */
+@media (min-width: 1536px) {
+  main {
+    max-width: 1536px;
+  }
+}
