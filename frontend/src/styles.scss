@@ -12,44 +12,92 @@
 }
 
 body {
-  background: linear-gradient(to right, #2b1d52, #1c1137);
+  background: #1b1236;
 }
 
 main {
   margin: 0 auto;
 }
 
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1c1137;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #68579b;
+  border-radius: 10px;
+  border: 3px solid #1c1137;
+}
+
 /* sm */
-@media (min-width: 640px) {
-  main {
-    max-width: 640px;
+// @media (min-width: 640px) {
+//   main {
+//     max-width: 640px;
+//   }
+// }
+
+/* md */
+// @media (min-width: 768px) {
+//   main {
+//     max-width: 768px;
+//   }
+// }
+
+/* lg */
+// @media (min-width: 1024px) {
+//   main {
+//     max-width: 1024px;
+//   }
+// }
+
+/* xl */
+// @media (min-width: 1280px) {
+//   main {
+//     max-width: 1200px;
+//   }
+// }
+
+/* 2xl */
+// @media (min-width: 1536px) {
+//   main {
+//     max-width: 1536px;
+//   }
+// }
+
+@mixin screen-resolution-2xl {
+  @media (min-width: 1536px) {
+    max-width: 1536px;
+    margin: 0 auto;
   }
 }
 
-/* md */
-@media (min-width: 768px) {
-  main {
+@mixin screen-resolution-xl {
+  @media (min-width: 1280px) {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+@mixin screen-resolution-lg {
+  @media (min-width: 1024px) {
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+}
+
+@mixin screen-resolution-md {
+  @media (min-width: 768px) {
     max-width: 768px;
   }
 }
 
-/* lg */
-@media (min-width: 1024px) {
-  main {
-    max-width: 1024px;
-  }
-}
-
-/* xl */
-@media (min-width: 1280px) {
-  main {
-    max-width: 1200px;
-  }
-}
-
-/* 2xl */
-@media (min-width: 1536px) {
-  main {
-    max-width: 1536px;
+@mixin screen-resolution-sm {
+  @media (min-width: 640px) {
+    max-width: 640px;
   }
 }

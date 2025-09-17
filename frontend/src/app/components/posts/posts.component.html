@@ -1,0 +1,36 @@
+<section class="posts-section">
+  <div>
+    <h2>Últimas publicaciones</h2>
+
+    <div class="posts-searcher">
+      <input type="text" placeholder="Buscar publicaciones..." />
+      <button>Buscar</button>
+    </div>
+
+    <!-- posts list -->
+
+    <div class="posts-list">
+      @for (post of posts(); track $index) {
+      <div class="post-card">
+        <img
+          src="{{ post.image }}"
+          alt=""
+          style="width: 100%; height: auto; object-fit: contain"
+          loading="lazy"
+        />
+        <div class="post-card-content">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.description }}</p>
+          <div class="category-list">
+            @for (category of post.category; track $index) {
+            <span>{{ category }}</span>
+            }
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <aside class="categories">category</aside>
+  </div>
+</section>

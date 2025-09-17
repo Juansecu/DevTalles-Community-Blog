@@ -9,9 +9,9 @@
 
   <nav class="navbar">
     <ul>
-      <li>Inicio</li>
-      <li>Categorías</li>
-      <li>Cursos</li>
+      @for (navbarLink of menuNavbar(); track $index) {
+      <li>{{ navbarLink }}</li>
+      }
     </ul>
 
     <div class="icon">
