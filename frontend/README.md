@@ -1,6 +1,16 @@
-# DevtallesCommunityBlogFrontend
+# Devtalles - Community Blog Frontend
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
+
+## Requirements
+
+- **[Node.js](https://nodejs.org/) -** (v22.18 or higher)
+- **[pnpm](https://pnpm.io/) -** (v10.15.0 or higher)
+- **Environment variables:**
+
+    | Variable           | Type   | Description                                 | Required | Default | Example              |
+    |--------------------|--------|---------------------------------------------|----------|---------|----------------------|
+    | `CAPTCHA_SITE_KEY` | String |CAPTCHA site key for client-side integration | Yes      | None    | `<CAPTCHA Site Key>` |
 
 ## Development server
 
