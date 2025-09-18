@@ -65,6 +65,56 @@ export class PostsComponent {
       description: 'Description for Post 6',
       category: ['Category 6'],
       image: '/example.jpg'
+    },
+    {
+      id: 7,
+      title: 'Post 7',
+      description: 'Description for Post 7',
+      category: ['Category 1', 'Category 4'],
+      image: '/example.jpg'
+    },
+    {
+      id: 8,
+      title: 'Post 8',
+      description: 'Description for Post 8',
+      category: ['Category 2', 'Category 5'],
+      image: '/example.jpg'
+    },
+    {
+      id: 9,
+      title: 'Post 9',
+      description: 'Description for Post 9',
+      category: ['Category 3', 'Category 6'],
+      image: '/example.jpg'
     }
   ]);
+
+  allCategories: Signal<string[]> = computed(() => {
+    return [
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria',
+      'Categoria'
+    ];
+  });
 }
