@@ -6,6 +6,9 @@ import Joi from 'joi';
 import { AppController } from './app.controller';
 
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
@@ -30,8 +33,12 @@ import { AppService } from './app.service';
       password: process.env.POSTGRES_PASSWORD,
       port: process.env.POSTGRES_PORT ? +process.env.POSTGRES_PORT : 5432,
       type: 'postgres',
-      username: process.env.POSTGRES_USER
-    })
+      username: process.env.POSTGRES_USER,
+      synchronize: true,
+    }),
+    UsersModule,
+    RolesModule,
+    PermissionsModule
   ],
   controllers: [AppController],
   providers: [AppService]
