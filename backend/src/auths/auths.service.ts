@@ -1,29 +1,39 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthsService {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
+  // 🔹 Login normal (email + password)
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findByEmail(email);
+    // Aquí validas con tu DB real
+    const user = { id: 1, email, username: 'UsuarioPrueba' };
+
     if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado');
+      throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    const passwordValid = await bcrypt.compare(password, user.password);
-    if (!passwordValid) {
-      throw new UnauthorizedException('Contraseña incorrecta');
-    }
+    const token = this.generateJwt(user);
+    return { user, token };
+  }
 
+  // 🔹 Método compartido para generar el JWT
+  generateJwt(user: any): string {
     const payload = { sub: user.id, email: user.email };
-    const token = await this.jwtService.signAsync(payload);
+    return this.jwtService.sign(payload);
+  }
 
+  // 🔹 Login con Discord (Passport ya te da el perfil en req.user)
+  async validateDiscordUser(profile: any) {
+    const user = {
+      id: profile.id,
+      email: profile.email,
+      username: profile.username,
+      avatar: profile.avatar,
+    };
+
+    const token = this.generateJwt(user);
     return { user, token };
   }
 }

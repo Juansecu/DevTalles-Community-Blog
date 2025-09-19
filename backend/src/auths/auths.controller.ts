@@ -1,5 +1,7 @@
-import { Controller, Post, Body, Res, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards, Post, Body, Res, UnauthorizedException } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthsService } from './auths.service';
+import { setAuthCookie } from '../utils/cookie.util';
 import type { Response } from 'express';
 
 @Controller('auth')
@@ -18,14 +20,22 @@ export class AuthsController {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    // Guardamos el JWT en una cookie HttpOnly
-    res.cookie('access_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // solo en https en prod
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60, // 1 hora
-    });
-
+    setAuthCookie(res, token); // 👈 ya no repites lógica
     return { message: 'Login exitoso', user };
+  }
+
+  @Get('discord')
+  @UseGuards(AuthGuard('discord'))
+  async redirectToDiscord() {
+    // Passport redirige automáticamente a Discord
+  }
+
+  @Get('discord/callback')
+  @UseGuards(AuthGuard('discord'))
+  async discordCallback(@Req() req: any, @Res({ passthrough: true }) res: Response) {
+    const user = req.user;
+    const token = await this.authService.generateJwt(user);
+    setAuthCookie(res, token); 
+    return { message: 'Login con Discord exitoso', user };
   }
 }
