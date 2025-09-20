@@ -1,0 +1,36 @@
+div {
+  height: auto;
+  padding: 10px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin: 0;
+  background: #120c24;
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 200px;
+    background: none;
+    ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: none;
+      li {
+        font-size: 18px;
+        background: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+        transition: ease-in 0.2s all;
+
+        &:hover {
+          color: #b9b8b8;
+        }
+      }
+    }
+  }
+}
