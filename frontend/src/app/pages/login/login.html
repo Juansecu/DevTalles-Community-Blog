@@ -33,14 +33,19 @@
         </label>
 
         <div class="form-row">
-          <label class="remember"> <input type="checkbox" /> Recordarme </label>
+          <label class="remember">
+            <input type="checkbox" id="remember-checkbox" />
+            <span class="checkbox-custom" aria-hidden="true"></span>
+            <span class="remember-text">Recordarme</span>
+          </label>
           <a class="forgot" href="#">¿Olvidaste tu contraseña?</a>
         </div>
 
         <button class="btn btn-primary" type="submit">INICIAR SESIÓN</button>
 
         <p class="signup">
-          ¿Aún no tienes tu cuenta de DevTalles? <a href="#">Crea tu cuenta</a>
+          ¿Aún no tienes tu cuenta de DevTalles?
+          <a routerLink="/register">Crea tu cuenta</a>
         </p>
       </form>
     </main>

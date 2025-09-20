@@ -126,6 +126,42 @@ $input-bg: #120c24;
   align-items: center;
   gap: 8px;
 }
+
+/* Custom checkbox styling (same as register) */
+.remember {
+  position: relative;
+}
+.remember input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  position: absolute;
+}
+.checkbox-custom {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  display: inline-block;
+  flex: 0 0 20px;
+  margin-top: 2px;
+}
+.remember input[type='checkbox']:checked + .checkbox-custom {
+  background: linear-gradient(180deg, #4aa0ff, #1677ff);
+  border-color: transparent;
+}
+.remember input[type='checkbox']:checked + .checkbox-custom:after {
+  content: '\2713';
+  color: white;
+  font-size: 13px;
+  display: block;
+  text-align: center;
+  line-height: 18px;
+}
+.remember-text {
+  margin-left: 6px;
+}
 .forgot {
   color: $muted;
   font-size: 13px;
