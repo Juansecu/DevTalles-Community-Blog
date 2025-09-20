@@ -11,17 +11,12 @@
   font-family: sans-serif;
 }
 
-html,
-body {
-  min-height: 100dvh;
-}
-
 body {
   background: #1b1236;
 }
 
 main {
-  margin: 0 auto;
+  // min-height: 100vh;
 }
 
 /* scrollbar */
