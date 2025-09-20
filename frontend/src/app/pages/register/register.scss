@@ -1,4 +1,5 @@
 // Register page styles — reuse visual language from login
+@use 'sass:color';
 
 $muted: #9a8fb0;
 $accent-pink: #f2d9f2;
@@ -175,7 +176,7 @@ $input-bg: #120c24; // match login input background
 }
 .agree a {
   text-decoration: underline;
-  color: lighten($muted, 10%);
+  color: color.adjust($muted, $lightness: 10%);
 }
 
 .btn-primary {
@@ -196,7 +197,7 @@ $input-bg: #120c24; // match login input background
 }
 .signin-link a {
   text-decoration: underline;
-  color: lighten($muted, 10%);
+  color: color.adjust($muted, $lightness: 10%);
 }
 
 @media (max-width: 640px) {

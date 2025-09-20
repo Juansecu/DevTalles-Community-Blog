@@ -1,5 +1,4 @@
 import { Component, computed, Signal } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
 
 export interface Post {
   id: number;
@@ -11,7 +10,7 @@ export interface Post {
 
 @Component({
   selector: 'app-posts',
-  imports: [NgOptimizedImage],
+  imports: [],
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.scss'
 })
