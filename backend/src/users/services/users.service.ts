@@ -35,11 +35,7 @@ export class UsersService {
 
   async findOne(userId: number): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { userId } });
-<<<<<<< HEAD:backend/src/users/users.service.ts
-    if (!user) throw new NotFoundException(`User with id ${userId} not found`);
-=======
     if (!user) throw new NotFoundException(`User with ID ${userId} not found`);
->>>>>>> feature_blog_api:backend/src/users/services/users.service.ts
     return user;
   }
 
