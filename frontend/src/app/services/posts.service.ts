@@ -1,14 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Posts } from '../interfaces/posts.interface';
 
-export interface Post {
-  id: number;
-  title: string;
-  description: string;
-  category: string[];
-  image: string;
-}
-
-export const MOCK_POSTS: Post[] = [
+export const MOCK_POSTS: Posts[] = [
   {
     id: 1,
     title: 'Post 1',
@@ -85,7 +78,12 @@ export const MOCK_POSTS: Post[] = [
   providedIn: 'root'
 })
 export class PostService {
-  getAllPosts(): Promise<Post[]> {
+  getAllPosts(): Promise<Posts[]> {
     return Promise.resolve(MOCK_POSTS);
+  }
+
+  getPost(id: number): Promise<Posts | undefined> {
+    const post = MOCK_POSTS.find(p => p.id === id);
+    return Promise.resolve(post);
   }
 }

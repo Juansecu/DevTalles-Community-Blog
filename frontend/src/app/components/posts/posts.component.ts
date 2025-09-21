@@ -1,6 +1,7 @@
 import { Component, computed, inject, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { PostService, Post } from '../../services/posts.service';
+import { PostService } from '../../services/posts.service';
+import { Posts } from '../../interfaces/posts.interface';
 
 @Component({
   selector: 'app-posts',
@@ -12,7 +13,7 @@ export class PostsComponent {
   private router = inject(Router);
   private postService = inject(PostService);
 
-  posts = signal<Post[]>([]);
+  posts = signal<Posts[]>([]);
 
   constructor() {
     this.getAllPosts();
