@@ -21,15 +21,40 @@
         O inicia sesión<br />con tu cuenta de usuario<br />de DevTalles
       </div>
 
-      <form class="login-form" aria-label="formulario de inicio de sesión">
+      <form
+        class="login-form"
+        [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()"
+        aria-label="formulario de inicio de sesión"
+      >
         <label class="field">
           <span class="field-label">Correo electrónico</span>
-          <input class="input" type="email" placeholder="Correo electrónico" required />
+          <input
+            class="input"
+            [class.error]="hasEmailError()"
+            type="email"
+            placeholder="Correo electrónico"
+            formControlName="email"
+            required
+          />
+          @if (hasEmailError()) {
+          <span class="error-message">{{ getEmailError() }}</span>
+          }
         </label>
 
         <label class="field">
           <span class="field-label">Contraseña</span>
-          <input class="input" type="password" placeholder="Contraseña" required />
+          <input
+            class="input"
+            [class.error]="hasPasswordError()"
+            type="password"
+            placeholder="Contraseña"
+            formControlName="password"
+            required
+          />
+          @if (hasPasswordError()) {
+          <span class="error-message">{{ getPasswordError() }}</span>
+          }
         </label>
 
         <div class="form-row">

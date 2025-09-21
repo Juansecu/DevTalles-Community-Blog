@@ -195,6 +195,19 @@ $input-bg: #120c24;
   display: none;
 }
 
+// Error styles
+.error-message {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-top: 4px;
+  display: block;
+}
+
+.input.error {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+}
+
 @media (max-width: 640px) {
   .title {
     font-size: 32px;

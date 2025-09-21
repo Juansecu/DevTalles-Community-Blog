@@ -17,61 +17,129 @@
         O regístrate<br />con tu dirección de correo<br />electrónico
       </div>
 
-      <form class="register-form" aria-label="formulario de registro">
+      <form
+        class="register-form"
+        [formGroup]="registerForm"
+        (ngSubmit)="onSubmit()"
+        aria-label="formulario de registro"
+      >
         <div class="row two-cols">
           <label class="field">
             <span class="field-label">Nombre(s)</span>
-            <input class="input" type="text" placeholder="Nombre(s)" required />
+            <input
+              class="input"
+              [class.error]="hasFirstNameError()"
+              type="text"
+              placeholder="Nombre(s)"
+              formControlName="firstName"
+              required
+            />
+            @if (hasFirstNameError()) {
+            <span class="error-message">{{ getFirstNameError() }}</span>
+            }
           </label>
 
           <label class="field">
             <span class="field-label">Apellidos(s)</span>
-            <input class="input" type="text" placeholder="Apellidos(s)" required />
+            <input
+              class="input"
+              [class.error]="hasLastNameError()"
+              type="text"
+              placeholder="Apellidos(s)"
+              formControlName="lastName"
+              required
+            />
+            @if (hasLastNameError()) {
+            <span class="error-message">{{ getLastNameError() }}</span>
+            }
           </label>
         </div>
 
         <label class="field">
           <span class="field-label">Correo electrónico</span>
-          <input class="input" type="email" placeholder="Correo electrónico" required />
+          <input
+            class="input"
+            [class.error]="hasEmailError()"
+            type="email"
+            placeholder="Correo electrónico"
+            formControlName="email"
+            required
+          />
+          @if (hasEmailError()) {
+          <span class="error-message">{{ getEmailError() }}</span>
+          }
         </label>
 
         <label class="field">
           <span class="field-label">Repite tu correo electrónico</span>
           <input
             class="input"
+            [class.error]="hasConfirmEmailError()"
             type="email"
             placeholder="Repite tu correo electrónico"
+            formControlName="confirmEmail"
             required
           />
+          @if (hasConfirmEmailError()) {
+          <span class="error-message">{{ getConfirmEmailError() }}</span>
+          }
         </label>
 
         <label class="field">
           <span class="field-label">Nombre de usuario</span>
-          <input class="input" type="text" placeholder="Nombre de usuario" required />
+          <input
+            class="input"
+            [class.error]="hasUsernameError()"
+            type="text"
+            placeholder="Nombre de usuario"
+            formControlName="username"
+            required
+          />
+          @if (hasUsernameError()) {
+          <span class="error-message">{{ getUsernameError() }}</span>
+          }
         </label>
 
         <label class="field">
           <span class="field-label">Contraseña</span>
-          <input class="input" type="password" placeholder="Contraseña" required />
+          <input
+            class="input"
+            [class.error]="hasPasswordError()"
+            type="password"
+            placeholder="Contraseña"
+            formControlName="password"
+            required
+          />
+          @if (hasPasswordError()) {
+          <span class="error-message">{{ getPasswordError() }}</span>
+          }
         </label>
 
         <label class="field">
           <span class="field-label">Repite tu contraseña</span>
           <input
             class="input"
+            [class.error]="hasConfirmPasswordError()"
             type="password"
             placeholder="Repite tu contraseña"
+            formControlName="confirmPassword"
             required
           />
+          @if (hasConfirmPasswordError()) {
+          <span class="error-message">{{ getConfirmPasswordError() }}</span>
+          }
         </label>
 
         <label class="agree">
-          <input type="checkbox" id="agree-checkbox" />
+          <input type="checkbox" id="agree-checkbox" formControlName="agreeTerms" />
           <span class="checkbox-custom" aria-hidden="true"></span>
           <span class="agree-text"
             >He leído y estoy de acuerdo con las <a href="#">Condiciones de Uso</a> y
             <a href="#">Políticas de Privacidad del Usuario</a></span
           >
+          @if (hasAgreeTermsError()) {
+          <span class="error-message">{{ getAgreeTermsError() }}</span>
+          }
         </label>
 
         <button class="btn btn-primary" type="submit">REGISTRARSE</button>
