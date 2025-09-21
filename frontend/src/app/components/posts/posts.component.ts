@@ -1,127 +1,40 @@
-import { Component, computed, Inject, Signal } from '@angular/core';
+import { Component, computed, inject, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
-
-export interface Post {
-  id: number;
-  title: string;
-  description: string;
-  category: string[];
-  image: string;
-}
+import { PostService, Post } from '../../services/posts.service';
 
 @Component({
   selector: 'app-posts',
   imports: [],
   templateUrl: './posts.component.html',
-  styleUrl: './posts.component.scss'
+  styleUrls: ['./posts.component.scss']
 })
 export class PostsComponent {
-  private router = Inject(Router);
+  private router = inject(Router);
+  private postService = inject(PostService);
 
-  posts: Signal<Post[]> = computed(() => [
-    {
-      id: 1,
-      title: 'Post 1',
-      description: 'Description for Post 1',
-      category: [
-        'Category 1',
-        'Category 2',
-        'Category 3',
-        'Category 4',
-        'Category 5',
-        'Category 6'
-      ],
-      image: '/example.jpg'
-    },
-    {
-      id: 2,
-      title: 'Post 2',
-      description: 'Description for Post 2',
-      category: ['Category 2'],
-      image: '/example.jpg'
-    },
-    {
-      id: 3,
-      title: 'Post 3',
-      description: 'Description for Post 3',
-      category: ['Category 3'],
-      image: '/example.jpg'
-    },
-    {
-      id: 4,
-      title: 'Post 4',
-      description: 'Description for Post 4',
-      category: ['Category 4'],
-      image: '/example.jpg'
-    },
-    {
-      id: 5,
-      title: 'Post 5',
-      description: 'Description for Post 5',
-      category: ['Category 5'],
-      image: '/example.jpg'
-    },
-    {
-      id: 6,
-      title: 'Post 6',
-      description: 'Description for Post 6',
-      category: ['Category 6'],
-      image: '/example.jpg'
-    },
-    {
-      id: 7,
-      title: 'Post 7',
-      description: 'Description for Post 7',
-      category: ['Category 1', 'Category 4'],
-      image: '/example.jpg'
-    },
-    {
-      id: 8,
-      title: 'Post 8',
-      description: 'Description for Post 8',
-      category: ['Category 2', 'Category 5'],
-      image: '/example.jpg'
-    },
-    {
-      id: 9,
-      title: 'Post 9',
-      description: 'Description for Post 9',
-      category: ['Category 3', 'Category 6'],
-      image: '/example.jpg'
+  posts = signal<Post[]>([]);
+
+  constructor() {
+    this.getAllPosts();
+  }
+
+  async getAllPosts() {
+    try {
+      const posts = await this.postService.getAllPosts();
+      this.posts.set(posts);
+    } catch (error) {
+      console.error('Error loading posts:', error);
     }
-  ]);
+  }
 
   allCategories: Signal<string[]> = computed(() => {
-    return [
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria',
-      'Categoria'
-    ];
+    const posts = this.posts();
+    const categories = posts.flatMap(post => post.category);
+    return [...new Set(categories)];
   });
 
   postClickeable(postId: number): void {
-    console.log('postId', postId);
+    console.log(postId);
     this.router.navigate(['/posts', postId]);
   }
 }
