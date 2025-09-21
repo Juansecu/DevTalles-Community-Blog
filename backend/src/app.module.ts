@@ -2,19 +2,15 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import Joi from 'joi';
-
 import { AppController } from './app.controller';
-
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { RolesModule } from './roles/roles.module';
-import { PermissionsModule } from './permissions/permissions.module';
-import { AuthsModule } from './auths/auths.module';
+import { AuthsModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      ignoreEnvFile: true,
+      ignoreEnvFile: false,
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('production'),
         PORT: Joi.number().default(3000),
@@ -22,7 +18,12 @@ import { AuthsModule } from './auths/auths.module';
         POSTGRES_HOST: Joi.string().default('localhost'),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_PORT: Joi.number().default(5432),
-        POSTGRES_USER: Joi.string().required()
+        POSTGRES_USER: Joi.string().required(),
+        DISCORD_CLIENT_ID: Joi.string().required(),
+        DISCORD_CLIENT_SECRET: Joi.string().required(),
+        DISCORD_CALLBACK_URL: Joi.string().required(),
+        SECURE_AUTHENTICATION_COKKIES: Joi.boolean().required(),
+        JWT_SECRET: Joi.string().required()
       })
     }),
     TypeOrmModule.forRoot({
@@ -35,11 +36,9 @@ import { AuthsModule } from './auths/auths.module';
       port: process.env.POSTGRES_PORT ? +process.env.POSTGRES_PORT : 5432,
       type: 'postgres',
       username: process.env.POSTGRES_USER,
-      synchronize: true,
+      synchronize: true
     }),
     UsersModule,
-    RolesModule,
-    PermissionsModule,
     AuthsModule
   ],
   controllers: [AppController],

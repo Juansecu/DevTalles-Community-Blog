@@ -21,6 +21,6 @@
     "strictBindCallApply": true,
     "strictNullChecks": true,
     "target": "ES2023",
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "typeRoots": ["src/auth/types", "./node_modules/@types"]
   }
 }

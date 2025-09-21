@@ -10,18 +10,21 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private usersRepository: Repository<User>
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const saltRounds = 10;
 
     // Hashear la contraseña antes de guardar
-    const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
+    const hashedPassword = await bcrypt.hash(
+      createUserDto.password,
+      saltRounds
+    );
 
     const user = this.usersRepository.create({
       ...createUserDto,
-      password: hashedPassword,
+      password: hashedPassword
     });
 
     return this.usersRepository.save(user);
