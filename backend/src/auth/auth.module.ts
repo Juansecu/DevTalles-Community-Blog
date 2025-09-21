@@ -7,7 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './services/auth.service';
 import { PermissionsService } from './services/permissions.service';
 import { RolesService } from './services/roles.service';
-import { AuthsController } from './auth.controller';
+import { AuthController } from './auth.controller';
 
 import { UsersModule } from '../users/users.module';
 import { DiscordStrategy } from './strategies/discord.strategy';
@@ -38,7 +38,7 @@ import { User } from '../users/entities/user.entity';
     DiscordStrategy,
     JwtStrategy
   ],
-  controllers: [AuthsController],
+  controllers: [AuthController],
   exports: [AuthService, JwtModule]
 })
-export class AuthsModule {}
+export class AuthModule {}
