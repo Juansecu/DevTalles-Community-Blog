@@ -21,6 +21,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Access } from '../auth/decorators/access.decorator';
 import { AccessGuard } from '../auth/guards/access.guard';
+import { number } from 'joi';
 
 @ApiTags('users') // Grupo en Swagger
 @Controller('users')
@@ -38,38 +39,41 @@ export class UsersController {
   @Get()
   @ApiOperation({ summary: 'Obtener todos los usuarios' })
   @ApiResponse({ status: 200, description: 'Lista de usuarios.' })
-  @UseGuards(AuthGuard('jwt'), AccessGuard)
-  @Access(['admin'], ['user.read'])
+  //@UseGuards(AuthGuard('jwt'), AccessGuard)
+  //@Access(['admin'], ['user.read'])
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
+  @Get(':userId')
   @ApiOperation({ summary: 'Obtener un usuario por ID' })
-  @ApiParam({ name: 'id', type: String, description: 'ID del usuario' })
+  @ApiParam({ name: 'userId', type: String, description: 'ID del usuario' })
   @ApiResponse({ status: 200, description: 'Usuario encontrado.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  findOne(@Param('userId') userId: number) {
+    return this.usersService.findOne(userId);
   }
 
-  @Patch(':id')
+  @Patch(':userId')
   @ApiOperation({ summary: 'Actualizar un usuario por ID' })
-  @ApiParam({ name: 'id', type: String, description: 'ID del usuario' })
+  @ApiParam({ name: 'userId', type: number, description: 'ID del usuario' })
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({
     status: 200,
     description: 'Usuario actualizado correctamente.'
   })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  update(
+    @Param('userId') userId: number,
+    @Body() updateUserDto: UpdateUserDto
+  ) {
+    return this.usersService.update(userId, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete(':userId')
   @ApiOperation({ summary: 'Eliminar un usuario por ID' })
-  @ApiParam({ name: 'id', type: String, description: 'ID del usuario' })
+  @ApiParam({ name: 'userId', type: number, description: 'ID del usuario' })
   @ApiResponse({ status: 200, description: 'Usuario eliminado correctamente.' })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  remove(@Param('userId') userId: number) {
+    return this.usersService.remove(userId);
   }
 }

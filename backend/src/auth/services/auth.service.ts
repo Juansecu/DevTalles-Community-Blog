@@ -21,7 +21,7 @@ export class AuthService {
   ): Promise<{ user: AuthUser; token: string }> {
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password']
+      select: ['userId', 'email', 'password']
     });
 
     if (!user) {
@@ -34,7 +34,7 @@ export class AuthService {
     }
 
     const safeUser: AuthUser = {
-      id: user.id,
+      userId: user.userId,
       email: user.email
     };
 
@@ -45,7 +45,7 @@ export class AuthService {
   // 🔹 Login con Discord
   validateDiscordUser(profile: AuthUser): { user: AuthUser; token: string } {
     const user: AuthUser = {
-      id: profile.id,
+      userId: profile.userId,
       email: profile.email,
       username: profile.username,
       avatar: profile.avatar
@@ -62,7 +62,7 @@ export class AuthService {
 
   // 🔹 Generar JWT internamente
   private generateJwt(user: AuthUser): string {
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.userId, email: user.email };
     return this.jwtService.sign(payload);
   }
 }

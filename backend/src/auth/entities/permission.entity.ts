@@ -1,13 +1,42 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
 @Entity('permissions')
 export class Permission {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn({ name: 'Permission_id' }) // 🔹 Auto Increment
+  permissionId: number;
 
-  @Column({ unique: true })
+  @Column({
+    name: 'Name',
+    type: 'varchar',
+    length: 50,
+    nullable: false // 🔹 Required
+  })
   name: string;
 
-  @Column({ nullable: true })
-  description?: string;
+  @Column({
+    name: 'Description',
+    type: 'varchar',
+    length: 100,
+    nullable: false // 🔹 Required
+  })
+  description: string;
+
+  @CreateDateColumn({
+    name: 'Added_at',
+    type: 'timestamp',
+    update: false // 🔹 No se actualiza nunca
+  })
+  addedAt: Date;
+
+  @UpdateDateColumn({
+    name: 'Updated_at',
+    type: 'timestamp'
+  })
+  updatedAt: Date;
 }
