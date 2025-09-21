@@ -10,7 +10,7 @@
       <!-- posts list -->
       <div class="posts-list">
         @for (post of posts(); track $index) {
-        <div class="post-card">
+        <div class="post-card" (click)="postClickeable(post.id)">
           <img
             src="{{ post.image }}"
             alt=""

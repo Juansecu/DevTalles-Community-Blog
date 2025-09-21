@@ -1,4 +1,5 @@
-import { Component, computed, Signal } from '@angular/core';
+import { Component, computed, Inject, Signal } from '@angular/core';
+import { Router } from '@angular/router';
 
 export interface Post {
   id: number;
@@ -15,6 +16,8 @@ export interface Post {
   styleUrl: './posts.component.scss'
 })
 export class PostsComponent {
+  private router = Inject(Router);
+
   posts: Signal<Post[]> = computed(() => [
     {
       id: 1,
@@ -116,4 +119,9 @@ export class PostsComponent {
       'Categoria'
     ];
   });
+
+  postClickeable(postId: number): void {
+    console.log('postId', postId);
+    this.router.navigate(['/posts', postId]);
+  }
 }
