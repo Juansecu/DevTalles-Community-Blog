@@ -6,16 +6,20 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-@Entity('permissions')
+@Entity('Permissions')
 export class Permission {
-  @PrimaryGeneratedColumn({ name: 'Permission_id' }) // 🔹 Auto Increment
+  @PrimaryGeneratedColumn('increment', {
+    name: 'Permission_id',
+    type: 'integer'
+  })
   permissionId: number;
 
   @Column({
     name: 'Name',
     type: 'varchar',
     length: 50,
-    nullable: false // 🔹 Required
+    nullable: false,
+    unique: true
   })
   name: string;
 
@@ -23,20 +27,22 @@ export class Permission {
     name: 'Description',
     type: 'varchar',
     length: 100,
-    nullable: false // 🔹 Required
+    nullable: false
   })
   description: string;
 
   @CreateDateColumn({
     name: 'Added_at',
-    type: 'timestamp',
-    update: false // 🔹 No se actualiza nunca
+    type: 'datetime',
+    nullable: false,
+    update: false
   })
   addedAt: Date;
 
   @UpdateDateColumn({
     name: 'Updated_at',
-    type: 'timestamp'
+    type: 'datetime',
+    nullable: false
   })
   updatedAt: Date;
 }

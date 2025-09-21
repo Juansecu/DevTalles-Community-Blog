@@ -6,7 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards
+  UseGuards,
+  ParseIntPipe
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,7 +16,7 @@ import {
   ApiParam,
   ApiBody
 } from '@nestjs/swagger';
-import { UsersService } from './users.service';
+import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -47,10 +48,10 @@ export class UsersController {
 
   @Get(':userId')
   @ApiOperation({ summary: 'Obtener un usuario por ID' })
-  @ApiParam({ name: 'userId', type: String, description: 'ID del usuario' })
+  @ApiParam({ name: 'userId', type: Number, description: 'ID del usuario' })
   @ApiResponse({ status: 200, description: 'Usuario encontrado.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
-  findOne(@Param('userId') userId: number) {
+  findOne(@Param('userId', ParseIntPipe) userId: number) {
     return this.usersService.findOne(userId);
   }
 
@@ -63,7 +64,7 @@ export class UsersController {
     description: 'Usuario actualizado correctamente.'
   })
   update(
-    @Param('userId') userId: number,
+    @Param('userId', ParseIntPipe) userId: number,
     @Body() updateUserDto: UpdateUserDto
   ) {
     return this.usersService.update(userId, updateUserDto);
@@ -73,7 +74,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Eliminar un usuario por ID' })
   @ApiParam({ name: 'userId', type: number, description: 'ID del usuario' })
   @ApiResponse({ status: 200, description: 'Usuario eliminado correctamente.' })
-  remove(@Param('userId') userId: number) {
+  remove(@Param('userId', ParseIntPipe) userId: number) {
     return this.usersService.remove(userId);
   }
 }

@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Permission } from './permission.entity';
 
-@Entity('roles')
+@Entity('Roles')
 export class Role {
   // 🔑 ID autoincremental
   @PrimaryGeneratedColumn({ name: 'Role_id' })
