@@ -21,7 +21,7 @@ export class AuthService {
   ): Promise<{ user: AuthUser; token: string }> {
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password']
+      select: ['userId', 'email', 'password']
     });
 
     if (!user) {
@@ -34,7 +34,7 @@ export class AuthService {
     }
 
     const safeUser: AuthUser = {
-      id: user.id,
+      id: user.userId,
       email: user.email
     };
 

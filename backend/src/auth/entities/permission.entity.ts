@@ -1,13 +1,48 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
 @Entity('permissions')
 export class Permission {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment', {
+    name: 'Permission_id',
+    type: 'integer'
+  })
+  permissionId: number;
 
-  @Column({ unique: true })
+  @Column({
+    name: 'Name',
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+    unique: true
+  })
   name: string;
 
-  @Column({ nullable: true })
-  description?: string;
+  @Column({
+    name: 'Description',
+    type: 'varchar',
+    length: 100,
+    nullable: false
+  })
+  description: string;
+
+  @CreateDateColumn({
+    name: 'Added_at',
+    type: 'datetime',
+    nullable: false,
+    update: false
+  })
+  addedAt: Date;
+
+  @UpdateDateColumn({
+    name: 'Updated_at',
+    type: 'datetime',
+    nullable: true
+  })
+  updatedAt: Date;
 }

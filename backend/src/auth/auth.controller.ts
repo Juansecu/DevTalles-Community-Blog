@@ -6,11 +6,11 @@ import {
   Post,
   Body,
   Res,
-  //UnauthorizedException,
   Param,
   Patch,
   Delete,
-  UsePipes
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './services/auth.service';
@@ -22,20 +22,21 @@ import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { ValidationPipe } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { AuthUser } from './typings/auth-user';
+
 export interface RequestWithUser extends Request {
   user: AuthUser;
 }
 
 @Controller('auth')
-export class AuthsController {
+export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly permissionsService: PermissionsService,
     private readonly rolesService: RolesService
   ) {}
+
   @Post('login')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async login(@Body() dto: CreateAuthDto, @Res() res: Response) {

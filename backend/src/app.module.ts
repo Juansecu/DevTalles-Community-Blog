@@ -5,13 +5,18 @@ import Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { AuthsModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      ignoreEnvFile: false,
+      ignoreEnvFile: true,
       validationSchema: Joi.object({
+        DISCORD_CALLBACK_URL: Joi.string().required(),
+        DISCORD_CLIENT_ID: Joi.string().required(),
+        DISCORD_CLIENT_SECRET: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
         NODE_ENV: Joi.string().valid('production'),
         PORT: Joi.number().default(3000),
         POSTGRES_DATABASE: Joi.string().required(),
@@ -19,11 +24,7 @@ import { AuthsModule } from './auth/auth.module';
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_PORT: Joi.number().default(5432),
         POSTGRES_USER: Joi.string().required(),
-        DISCORD_CLIENT_ID: Joi.string().required(),
-        DISCORD_CLIENT_SECRET: Joi.string().required(),
-        DISCORD_CALLBACK_URL: Joi.string().required(),
-        SECURE_AUTHENTICATION_COKKIES: Joi.boolean().required(),
-        JWT_SECRET: Joi.string().required()
+        SECURE_AUTHENTICATION_COOKIES: Joi.boolean().required()
       })
     }),
     TypeOrmModule.forRoot({
@@ -35,11 +36,11 @@ import { AuthsModule } from './auth/auth.module';
       password: process.env.POSTGRES_PASSWORD,
       port: process.env.POSTGRES_PORT ? +process.env.POSTGRES_PORT : 5432,
       type: 'postgres',
-      username: process.env.POSTGRES_USER,
-      synchronize: true
+      username: process.env.POSTGRES_USER
     }),
     UsersModule,
-    AuthsModule
+    AuthModule,
+    PostsModule
   ],
   controllers: [AppController],
   providers: [AppService]

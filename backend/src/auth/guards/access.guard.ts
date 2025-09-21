@@ -32,7 +32,7 @@ export class AccessGuard implements CanActivate {
     if (!user) return false;
 
     const userEntity = await this.userRepository.findOne({
-      where: { id: user.userId },
+      where: { userId: user.userId },
       relations: ['roles', 'permissions']
     });
 
