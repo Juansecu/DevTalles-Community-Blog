@@ -33,7 +33,7 @@ export class Permission {
 
   @CreateDateColumn({
     name: 'Added_at',
-    type: 'datetime',
+    type: 'timestamp',
     nullable: false,
     update: false
   })
@@ -41,7 +41,7 @@ export class Permission {
 
   @UpdateDateColumn({
     name: 'Updated_at',
-    type: 'datetime',
+    type: 'timestamp',
     nullable: false
   })
   updatedAt: Date;

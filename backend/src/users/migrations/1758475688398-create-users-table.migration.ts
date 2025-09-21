@@ -54,13 +54,13 @@ export class CreateUsersTableMigration1758475688398
           },
           {
             name: 'Registered_at',
-            type: 'datetime',
+            type: 'timestamp',
             isNullable: false,
             default: 'CURRENT_TIMESTAMP'
           },
           {
             name: 'Updated_at',
-            type: 'datetime',
+            type: 'timestamp',
             isNullable: false,
             default: 'CURRENT_TIMESTAMP',
             onUpdate: 'CURRENT_TIMESTAMP'

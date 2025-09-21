@@ -70,7 +70,7 @@ export class User {
 
   @CreateDateColumn({
     name: 'Registered_at',
-    type: 'datetime',
+    type: 'timestamp',
     nullable: false,
     update: false
   })
@@ -78,7 +78,7 @@ export class User {
 
   @UpdateDateColumn({
     name: 'Updated_at',
-    type: 'datetime',
+    type: 'timestamp',
     nullable: true
   })
   updatedAt: Date;
