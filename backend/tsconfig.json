@@ -20,6 +20,7 @@
     "sourceMap": true,
     "strictBindCallApply": true,
     "strictNullChecks": true,
-    "target": "ES2023"
+    "target": "ES2023",
+    "typeRoots": ["src/auth/types", "./node_modules/@types"]
   }
 }
