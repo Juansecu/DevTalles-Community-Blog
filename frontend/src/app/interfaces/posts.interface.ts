@@ -4,6 +4,8 @@ export interface Posts {
   description: string;
   category: string[];
   image: string;
+  likes?: number;
+  isLiked?: boolean;
 }
 
 export interface Post {
@@ -15,6 +17,8 @@ export interface Post {
   image: string;
   categories: string[];
   comments?: Comment[];
+  likes?: number;
+  isLiked?: boolean;
 }
 
 export interface Comment {

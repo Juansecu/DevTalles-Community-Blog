@@ -18,6 +18,7 @@ export class SinglePostComponent implements OnInit {
   postId = signal<string>('');
   post = signal<Post | null>(null);
   comments = signal<Comment[]>([]);
+  isLiking = signal<boolean>(false);
 
   commentForm: FormGroup = this.fb.group({
     comment: ['', [Validators.required]]
@@ -44,7 +45,9 @@ export class SinglePostComponent implements OnInit {
           author: 'DevTalles Team',
           publishedAt: '09/20/2025',
           image: postsData.image,
-          categories: postsData.category
+          categories: postsData.category,
+          likes: postsData.likes || 0,
+          isLiked: postsData.isLiked || false
         };
 
         this.post.set(fullPost);
@@ -124,6 +127,33 @@ export class SinglePostComponent implements OnInit {
     } else {
       console.log('Formulario de comentario no válido');
       this.commentForm.markAllAsTouched();
+    }
+  }
+
+  async toggleLike() {
+    if (this.isLiking() || !this.post()) {
+      return;
+    }
+
+    this.isLiking.set(true);
+
+    try {
+      const postId = parseInt(this.postId(), 10);
+      const result = await this.postService.toggleLike(postId);
+
+      if (result && this.post()) {
+        // Actualizar el post con los nuevos datos de likes
+        const updatedPost = {
+          ...this.post()!,
+          likes: result.likes,
+          isLiked: result.isLiked
+        };
+        this.post.set(updatedPost);
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    } finally {
+      this.isLiking.set(false);
     }
   }
 
