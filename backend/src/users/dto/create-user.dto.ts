@@ -10,7 +10,6 @@ import {
 
 import { MatchFields } from '../../shared/decorators/match-fields.validator';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 export class CreateUserDto {
   @ApiProperty({
     description: 'Nombre(s) del usuario',

@@ -16,6 +16,9 @@ declare module 'passport-discord' {
   }
 
   export class Strategy extends PassportStrategy {
-    constructor(options: StrategyOptions, verify?: (...args: any[]) => void);
+    constructor(
+      options: StrategyOptions,
+      verify?: (...args: unknown[]) => void
+    );
   }
 }

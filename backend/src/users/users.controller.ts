@@ -6,7 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  //UseGuards,
   ParseIntPipe,
   UsePipes,
   ValidationPipe
@@ -21,10 +21,10 @@ import {
 import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { Access } from '../auth/decorators/access.decorator';
-import { AccessGuard } from '../auth/guards/access.guard';
-import { number } from 'joi';
+//import { AuthGuard } from '@nestjs/passport';
+//import { Access } from '../auth/decorators/access.decorator';
+//import { AccessGuard } from '../auth/guards/access.guard';
+//import { number } from 'joi';
 import { ChangePasswordDto } from './dto/change-password.dto';
 
 @ApiTags('users') // Grupo en Swagger

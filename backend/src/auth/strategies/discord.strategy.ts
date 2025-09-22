@@ -4,7 +4,7 @@ import { Strategy } from 'passport-discord';
 import { DiscordUser } from '../typings/auth-user';
 
 export interface DiscordProfile {
-  userId: string;
+  id: string;
   username: string;
   discriminator?: string;
   email?: string;
@@ -26,7 +26,7 @@ export class DiscordStrategy extends PassportStrategy(Strategy, 'discord') {
     profile: DiscordProfile,
     done: (err: Error | null, user?: DiscordUser) => void
   ): void {
-    if (!profile.userId) {
+    if (!profile.id) {
       return done(new Error('Discord ID not found'));
     }
     if (!profile.email) {
@@ -34,11 +34,11 @@ export class DiscordStrategy extends PassportStrategy(Strategy, 'discord') {
     }
 
     const user: DiscordUser = {
-      userId: profile.userId,
+      userId: parseInt(profile.id),
       email: profile.email,
       username: `${profile.username}${profile.discriminator ? '#' + profile.discriminator : ''}`,
       avatar: profile.avatar,
-      discordId: profile.userId,
+      discordId: profile.id,
       accessToken,
       refreshToken
     };
