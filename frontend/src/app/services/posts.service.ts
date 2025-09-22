@@ -152,7 +152,6 @@ export class PostService {
       return Promise.resolve(null);
     }
 
-    // Toggle del estado like
     post.isLiked = !post.isLiked;
 
     // Actualizar contador de likes
@@ -161,10 +160,6 @@ export class PostService {
     } else {
       post.likes = Math.max((post.likes || 1) - 1, 0);
     }
-
-    console.log(
-      `Post ${id} ${post.isLiked ? 'liked' : 'unliked'}. Total likes: ${post.likes}`
-    );
 
     return Promise.resolve({
       likes: post.likes,
