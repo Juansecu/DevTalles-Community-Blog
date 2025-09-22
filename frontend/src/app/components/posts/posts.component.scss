@@ -1,0 +1,105 @@
+@use '../../../styles.scss';
+
+section {
+  --border-radius: 8px;
+  --dark-blue: #120c24;
+
+  background: #1b1236;
+  padding: 40px 0 40px 0;
+
+  h2 {
+    text-align: center;
+    margin: 50px 0;
+    font-size: 30px;
+  }
+
+  .main-content {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    @include styles.screen-resolution-2xl;
+    @include styles.screen-resolution-xl;
+
+    .posts-container {
+      .posts-searcher {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+
+        input {
+          border: none;
+          outline: none;
+          border-radius: var(--border-radius);
+          background-color: var(--dark-blue);
+          padding: 20px 10px;
+          width: 100%;
+          font-size: 18px;
+        }
+
+        button {
+          border-radius: var(--border-radius);
+          border: none;
+          padding: 15px 30px;
+          background-color: #ead4ff;
+          color: #000;
+        }
+      }
+
+      .posts-list {
+        margin-top: 20px;
+        display: grid;
+        gap: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+        .post-card {
+          background-color: var(--dark-blue);
+          border-radius: calc(var(--border-radius) - 3px);
+          display: flex;
+          flex-direction: column;
+
+          .post-card-content {
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            .category-list {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 5px;
+              span {
+                padding: 7px;
+                border: 1px solid #ead4ff;
+                border-radius: calc(var(--border-radius) + 0px);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .categories {
+      background-color: var(--dark-blue);
+      margin-top: 150px;
+      margin-left: 20px;
+      padding: 20px;
+      max-height: 900px;
+      overflow-y: auto;
+
+      .categories-grid {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+
+        span {
+          padding: 5px 2px;
+          border: 1px solid #ead4ff;
+          color: #ead4ff;
+          border-radius: 5px;
+          text-align: center;
+        }
+      }
+    }
+  }
+}

@@ -7,12 +7,15 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
+import { CategoriesModule } from './categories/categories.module';
+import { PostCommentsModule } from './post-comments/post-comments.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       ignoreEnvFile: true,
       validationSchema: Joi.object({
+        CORS_ALLOWED_ORIGINS: Joi.string().required(),
         DISCORD_CALLBACK_URL: Joi.string().required(),
         DISCORD_CLIENT_ID: Joi.string().required(),
         DISCORD_CLIENT_SECRET: Joi.string().required(),
@@ -40,7 +43,9 @@ import { PostsModule } from './posts/posts.module';
     }),
     UsersModule,
     AuthModule,
-    PostsModule
+    PostsModule,
+    CategoriesModule,
+    PostCommentsModule
   ],
   controllers: [AppController],
   providers: [AppService]
