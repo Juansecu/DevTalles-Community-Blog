@@ -38,4 +38,26 @@ export class PostsComponent {
     console.log(postId);
     this.router.navigate(['/posts', postId]);
   }
+
+  async togglePostLike(postId: number, event: Event): Promise<void> {
+    // Prevenir que se navegue al post cuando se hace clic en el botón de like
+    event.stopPropagation();
+
+    try {
+      const result = await this.postService.toggleLike(postId);
+
+      if (result) {
+        // Actualizar el post específico en la lista
+        const currentPosts = this.posts();
+        const updatedPosts = currentPosts.map(post =>
+          post.id === postId
+            ? { ...post, likes: result.likes, isLiked: result.isLiked }
+            : post
+        );
+        this.posts.set(updatedPosts);
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  }
 }
