@@ -1,0 +1,178 @@
+<div class="admin-panel">
+  <div class="admin-container">
+    <!-- Header -->
+    <header class="admin-header">
+      <h1>Panel Administrativo</h1>
+      <p>Gestión de Posts del Blog</p>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="admin-toolbar">
+      <button class="btn btn-primary" (click)="openCreateForm()">
+        <i class="icon">+</i>
+        Crear Nuevo Post
+      </button>
+      <div class="stats">
+        <span class="stat-item">Total Posts: {{ posts().length }}</span>
+      </div>
+    </div>
+
+    <!-- Posts Table -->
+    <div class="posts-table-container">
+      <table class="posts-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Categorías</th>
+            <th>Imagen</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (posts().length === 0) {
+          <tr>
+            <td colspan="6" class="no-posts">No hay posts disponibles</td>
+          </tr>
+          } @for (post of posts(); track post.id) {
+          <tr>
+            <td class="post-id">{{ post.id }}</td>
+            <td class="post-title">{{ post.title }}</td>
+            <td class="post-description">
+              {{ post.description.length > 100 ? (post.description | slice:0:100) + '...'
+              : post.description }}
+            </td>
+            <td class="post-categories">
+              @for (category of post.category; track $index) {
+              <span class="category-tag">{{ category }}</span>
+              }
+            </td>
+            <td class="post-image">
+              <img [src]="post.image" [alt]="post.title" class="thumbnail" />
+            </td>
+            <td class="post-actions">
+              <button class="btn btn-edit" (click)="openEditForm(post)" title="Editar">
+                Editar
+              </button>
+              <button class="btn btn-delete" (click)="deletePost(post)" title="Eliminar">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Form Modal -->
+    @if (showForm()) {
+    <div class="modal-overlay" (click)="closeForm()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditing() ? 'Editar Post' : 'Crear Nuevo Post' }}</h2>
+          <button class="btn-close" (click)="closeForm()">&times;</button>
+        </div>
+
+        <form class="post-form" [formGroup]="postForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="title">Título *</label>
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              [class.error]="hasFieldError('title')"
+              placeholder="Ingresa el título del post"
+            />
+            @if (hasFieldError('title')) {
+            <span class="error-message">{{ getFieldError('title') }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="description">Descripción *</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              rows="4"
+              [class.error]="hasFieldError('description')"
+              placeholder="Ingresa la descripción del post"
+            ></textarea>
+            @if (hasFieldError('description')) {
+            <span class="error-message">{{ getFieldError('description') }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="image">Imagen *</label>
+            <div class="image-upload-container">
+              <input
+                type="file"
+                id="image"
+                accept="image/*"
+                (change)="onImageSelect($event)"
+                [class.error]="hasFieldError('image')"
+                class="file-input"
+              />
+              <label for="image" class="file-input-label">
+                <span class="upload-icon">📷</span>
+                <span class="upload-text">
+                  {{ selectedImage() ? 'Cambiar imagen' : 'Seleccionar imagen' }}
+                </span>
+              </label>
+
+              @if (imagePreview()) {
+              <div class="image-preview">
+                <img [src]="imagePreview()!" alt="Preview" class="preview-image" />
+                <button type="button" class="remove-image-btn" (click)="removeImage()">
+                  ✕
+                </button>
+              </div>
+              } @if (selectedImage()) {
+              <div class="selected-file-info">
+                <span class="file-name">{{ selectedImage()!.name }}</span>
+                <span class="file-size"
+                  >{{ (selectedImage()!.size / 1024 / 1024).toFixed(2) }} MB</span
+                >
+              </div>
+              }
+            </div>
+            <small class="help-text">Formatos permitidos: JPEG, PNG, GIF, WebP.</small>
+            @if (hasFieldError('image')) {
+            <span class="error-message">{{ getFieldError('image') }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="category">Categorías *</label>
+            <input
+              type="text"
+              id="category"
+              formControlName="category"
+              [class.error]="hasFieldError('category')"
+              placeholder="Categoría 1, Categoría 2, Categoría 3"
+            />
+            <small class="help-text">Separa las categorías con comas</small>
+            @if (hasFieldError('category')) {
+            <span class="error-message">{{ getFieldError('category') }}</span>
+            }
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="closeForm()">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="postForm.invalid || (!selectedImage() && !isEditing())"
+            >
+              {{ isEditing() ? 'Actualizar' : 'Crear' }} Post
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    }
+  </div>
+</div>
