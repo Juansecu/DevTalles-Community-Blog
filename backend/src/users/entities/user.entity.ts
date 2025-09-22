@@ -4,12 +4,16 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryColumn,
   UpdateDateColumn
 } from 'typeorm';
 
 import { Permission } from '../../auth/entities/permission.entity';
 import { Role } from '../../auth/entities/role.entity';
+import { Category } from 'src/categories/entities/category.entity';
+import { PostComment } from 'src/post-comments/entities/post-comment.entity';
+import { Post } from 'src/posts/entities/post.entity';
 
 @Entity('Users')
 export class User {
@@ -101,4 +105,10 @@ export class User {
     }
   })
   permissions: Permission[];
+  @OneToMany(() => Category, category => category.addedBy)
+  categories: Category[];
+  @OneToMany(() => PostComment, comment => comment.author)
+  comments?: PostComment[];
+  @OneToMany(() => Post, post => post.author)
+  posts?: Post[];
 }

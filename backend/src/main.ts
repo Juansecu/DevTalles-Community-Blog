@@ -16,8 +16,8 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const whitelist = ['http://localhost:3001'];
-
+  const whitelist = process.env.CORS_ALLOWED_ORIGINS?.split(',');
+  console.log(whitelist);
   app.enableCors({
     origin: (
       origin: string | undefined,
@@ -25,7 +25,7 @@ async function bootstrap() {
     ) => {
       if (!origin) return callback(null, true);
 
-      if (whitelist.indexOf(origin) !== -1) {
+      if (whitelist?.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
         callback(new Error('No permitido por CORS'));
