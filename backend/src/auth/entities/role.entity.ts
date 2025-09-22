@@ -16,7 +16,13 @@ export class Role {
   roleId: number;
 
   // 🔹 Nombre del rol (máx 30 caracteres)
-  @Column({ name: 'Name', type: 'varchar', length: 30, nullable: false })
+  @Column({
+    name: 'Name',
+    type: 'varchar',
+    length: 30,
+    nullable: false,
+    unique: true
+  })
   name: string;
 
   // 🔹 Descripción del rol (máx 100 caracteres)
@@ -27,6 +33,31 @@ export class Role {
     nullable: false
   })
   description: string;
+
+  @Column({
+    name: 'Access_level',
+    type: 'int',
+    nullable: false,
+    default: 1
+  })
+  accessLevel: number;
+
+  // 🔹 Fecha de creación (no se actualiza nunca)
+  @CreateDateColumn({
+    name: 'Added_at',
+    type: 'timestamp',
+    nullable: false,
+    update: false
+  })
+  addedAt: Date;
+
+  // 🔹 Fecha de última actualización
+  @UpdateDateColumn({
+    name: 'Updated_at',
+    type: 'timestamp',
+    nullable: false
+  })
+  updatedAt: Date;
 
   // 🔹 Relación Many-to-Many con permisos
   @ManyToMany(() => Permission, { cascade: true })
@@ -42,19 +73,4 @@ export class Role {
     }
   })
   permissions: Permission[];
-
-  // 🔹 Fecha de creación (no se actualiza nunca)
-  @CreateDateColumn({
-    name: 'Added_at',
-    type: 'timestamp',
-    update: false
-  })
-  addedAt: Date;
-
-  // 🔹 Fecha de última actualización
-  @UpdateDateColumn({
-    name: 'Updated_at',
-    type: 'timestamp'
-  })
-  updatedAt: Date;
 }
