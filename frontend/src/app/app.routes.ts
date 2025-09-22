@@ -3,6 +3,7 @@ import { HomeComponent } from './pages/home/home';
 import { LoginComponent } from './pages/login/login';
 import { RegisterComponent } from './pages/register/register';
 import { SinglePostComponent } from './pages/post/post';
+import { AdminComponent } from './pages/admin/admin/admin';
 
 export const routes: Routes = [
   {
@@ -20,5 +21,9 @@ export const routes: Routes = [
   {
     path: 'posts/:id',
     component: SinglePostComponent
+  },
+  {
+    path: 'admin',
+    component: AdminComponent
   }
 ];
