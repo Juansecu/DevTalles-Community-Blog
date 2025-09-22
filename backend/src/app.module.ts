@@ -31,7 +31,7 @@ import { PostsModule } from './posts/posts.module';
       autoLoadEntities: true,
       database: process.env.POSTGRES_DATABASE,
       host: process.env.POSTGRES_HOST || 'localhost',
-      migrations: [__dirname + './**/migrations/*{.ts,.js}'],
+      migrations: [__dirname + '/**/migrations/*{.ts,.js}'],
       migrationsRun: true,
       password: process.env.POSTGRES_PASSWORD,
       port: process.env.POSTGRES_PORT ? +process.env.POSTGRES_PORT : 5432,
