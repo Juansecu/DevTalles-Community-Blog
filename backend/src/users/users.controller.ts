@@ -6,7 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  //UseGuards,
+  UseGuards,
   ParseIntPipe,
   UsePipes,
   ValidationPipe
@@ -16,18 +16,18 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
-  ApiBody
+  ApiBody,
+  ApiBearerAuth
 } from '@nestjs/swagger';
 import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-//import { AuthGuard } from '@nestjs/passport';
-//import { Access } from '../auth/decorators/access.decorator';
-//import { AccessGuard } from '../auth/guards/access.guard';
-//import { number } from 'joi';
+import { AuthGuard } from '@nestjs/passport';
+import { AccessGuard } from '../auth/guards/access.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { Access } from '../auth/decorators/access.decorator';
 
-@ApiTags('users') // Grupo en Swagger
+@ApiTags('Users') // Grupo en Swagger
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -41,10 +41,11 @@ export class UsersController {
   }
 
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Obtener todos los usuarios' })
   @ApiResponse({ status: 200, description: 'Lista de usuarios.' })
-  //@UseGuards(AuthGuard('jwt'), AccessGuard)
-  //@Access(['admin'], ['user.read'])
+  @UseGuards(AuthGuard('jwt'), AccessGuard)
+  @Access(['ADMIN'], ['VIEW_USER_LIST'])
   findAll() {
     return this.usersService.findAll();
   }

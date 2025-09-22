@@ -122,8 +122,6 @@ export class SinglePostComponent implements OnInit {
       this.comments.set([newComment, ...currentComments]);
 
       this.commentForm.reset();
-
-      console.log('Comentario enviado:', commentText);
     } else {
       console.log('Formulario de comentario no válido');
       this.commentForm.markAllAsTouched();

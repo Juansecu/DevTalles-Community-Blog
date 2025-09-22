@@ -111,7 +111,6 @@ export class PostService {
       ...post
     };
 
-    console.log('Creating post:', newPost);
     MOCK_POSTS.push(newPost);
 
     return Promise.resolve(newPost);
@@ -126,8 +125,6 @@ export class PostService {
 
     MOCK_POSTS[index] = { ...MOCK_POSTS[index], ...post };
 
-    console.log('Updating post:', MOCK_POSTS[index]);
-
     return Promise.resolve(MOCK_POSTS[index]);
   }
 
@@ -139,8 +136,6 @@ export class PostService {
     }
 
     MOCK_POSTS.splice(index, 1);
-
-    console.log('Deleted post with id:', id);
 
     return Promise.resolve(true);
   }

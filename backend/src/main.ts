@@ -17,7 +17,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const whitelist = process.env.CORS_ALLOWED_ORIGINS?.split(',');
-  console.log(whitelist);
+
   app.enableCors({
     origin: (
       origin: string | undefined,
@@ -44,6 +44,10 @@ async function bootstrap() {
         .replace(/^(git\+)/, '')
         .replace(/(\.git)$/, '')}/blob/main/LICENSE`
     )
+    .addBearerAuth({
+      description: 'Autenticación mediante JWT (JSON Web Token)',
+      type: 'http'
+    })
     .build();
   const document: OpenAPIObject = SwaggerModule.createDocument(
     app,

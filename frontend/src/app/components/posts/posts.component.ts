@@ -35,7 +35,6 @@ export class PostsComponent {
   });
 
   postClickeable(postId: number): void {
-    console.log(postId);
     this.router.navigate(['/posts', postId]);
   }
 
