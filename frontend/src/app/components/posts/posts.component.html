@@ -1,0 +1,44 @@
+<section class="posts-section">
+  <div class="main-content">
+    <div class="posts-container">
+      <h2>Últimas publicaciones</h2>
+      <div class="posts-searcher">
+        <input type="text" placeholder="Buscar publicaciones..." />
+        <button>Buscar</button>
+      </div>
+
+      <!-- posts list -->
+      <div class="posts-list">
+        @for (post of posts(); track $index) {
+        <div class="post-card" (click)="postClickeable(post.id)">
+          <img
+            src="{{ post.image }}"
+            alt=""
+            style="width: 100%; height: auto; object-fit: contain"
+            loading="lazy"
+          />
+          <div class="post-card-content">
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.description }}</p>
+            <div class="category-list">
+              @for (category of post.category; track $index) {
+              <span>{{ category }}</span>
+              }
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Categories sidebar -->
+    <aside class="categories">
+      <h3>Categorías</h3>
+      <div class="categories-grid">
+        @for (category of allCategories(); track $index) {
+        <span class="category-item">{{ category }}</span>
+        }
+      </div>
+    </aside>
+  </div>
+</section>

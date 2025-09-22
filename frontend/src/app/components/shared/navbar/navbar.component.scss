@@ -1,0 +1,101 @@
+div {
+  height: auto;
+  padding: 10px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin: 0;
+  background: #120c24;
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    .brand-sub {
+      color: #ffffff;
+      opacity: 0.9;
+      font-size: 14px;
+      margin-left: 6px;
+      height: 80%;
+      padding-left: 10px;
+      padding-right: 20px;
+      border-left: 2px solid white;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 200px;
+    background: none;
+    ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: none;
+      li {
+        font-size: 18px;
+        background: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+        transition: ease-in 0.2s all;
+
+        &:hover {
+          color: #b9b8b8;
+        }
+      }
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .admin-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #fff;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #6b46c1, #3b82f6);
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: 600;
+
+      &:hover {
+        background: linear-gradient(135deg, #553c9a, #2563eb);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
+      }
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .user-icon {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      svg {
+        transition: transform 0.3s ease;
+      }
+
+      &:hover svg {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
