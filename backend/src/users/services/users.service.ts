@@ -1,7 +1,8 @@
 import {
   Injectable,
   NotFoundException,
-  ConflictException
+  ConflictException,
+  BadRequestException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,7 +11,6 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { IdGeneratorUtil } from '../../utils/id-generator.util';
-import { BadRequestException } from '@nestjs/common';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 
 @Injectable()
@@ -74,9 +74,9 @@ export class UsersService {
     }
 
     const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(dto.newPassword, saltRounds);
 
-    user.password = hashedPassword;
+    user.password = await bcrypt.hash(dto.newPassword, saltRounds);
+
     await this.usersRepository.save(user);
   }
 
