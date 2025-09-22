@@ -86,4 +86,44 @@ export class PostService {
     const post = MOCK_POSTS.find(p => p.id === id);
     return Promise.resolve(post);
   }
+
+  createPost(post: Omit<Posts, 'id'>): Promise<Posts> {
+    const newPost: Posts = {
+      id: Date.now(),
+      ...post
+    };
+
+    console.log('Creating post:', newPost);
+    MOCK_POSTS.push(newPost);
+
+    return Promise.resolve(newPost);
+  }
+
+  updatePost(id: number, post: Partial<Posts>): Promise<Posts | null> {
+    const index = MOCK_POSTS.findIndex(p => p.id === id);
+
+    if (index === -1) {
+      return Promise.resolve(null);
+    }
+
+    MOCK_POSTS[index] = { ...MOCK_POSTS[index], ...post };
+
+    console.log('Updating post:', MOCK_POSTS[index]);
+
+    return Promise.resolve(MOCK_POSTS[index]);
+  }
+
+  deletePost(id: number): Promise<boolean> {
+    const index = MOCK_POSTS.findIndex(p => p.id === id);
+
+    if (index === -1) {
+      return Promise.resolve(false);
+    }
+
+    MOCK_POSTS.splice(index, 1);
+
+    console.log('Deleted post with id:', id);
+
+    return Promise.resolve(true);
+  }
 }
