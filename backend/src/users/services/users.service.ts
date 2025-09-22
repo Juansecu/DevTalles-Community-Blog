@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -6,6 +10,8 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { IdGeneratorUtil } from '../../utils/id-generator.util';
+import { BadRequestException } from '@nestjs/common';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,11 +21,31 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    // 🔎 Validar email o username existentes
+    const existingUser = await this.usersRepository.findOne({
+      where: [
+        { email: createUserDto.email },
+        { username: createUserDto.username }
+      ]
+    });
+
+    if (existingUser) {
+      if (existingUser.email === createUserDto.email) {
+        throw new ConflictException('El correo electrónico ya está registrado');
+      }
+      if (existingUser.username === createUserDto.username) {
+        throw new ConflictException('El nombre de usuario ya está en uso');
+      }
+    }
+
+    // 🔒 Hashear contraseña
     const saltRounds = 10;
     const hashedPassword: string = await bcrypt.hash(
       createUserDto.password,
       saltRounds
     );
+
+    // 🆕 Crear usuario
     const user: User = this.usersRepository.create({
       ...createUserDto,
       userId: IdGeneratorUtil.generateNumericalId(),
@@ -27,6 +53,31 @@ export class UsersService {
     });
 
     return this.usersRepository.save(user);
+  }
+
+  async changePassword(userId: number, dto: ChangePasswordDto): Promise<void> {
+    const user = await this.usersRepository.findOne({ where: { userId } });
+    if (!user) throw new NotFoundException(`User with ID ${userId} not found`);
+
+    const isCurrentPasswordValid = await bcrypt.compare(
+      dto.currentPassword,
+      user.password
+    );
+    if (!isCurrentPasswordValid) {
+      throw new BadRequestException('La contraseña actual es incorrecta');
+    }
+
+    if (dto.newPassword !== dto.newPasswordConfirmation) {
+      throw new BadRequestException(
+        'La nueva contraseña y su confirmación no coinciden'
+      );
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(dto.newPassword, saltRounds);
+
+    user.password = hashedPassword;
+    await this.usersRepository.save(user);
   }
 
   findAll(): Promise<User[]> {
@@ -50,7 +101,7 @@ export class UsersService {
     await this.usersRepository.remove(user);
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { email } });
   }
 }

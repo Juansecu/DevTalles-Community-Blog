@@ -4,6 +4,7 @@ import { ROLES_KEY, PERMISSIONS_KEY } from '../decorators/access.decorator';
 import { Repository } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RequestWithUser } from '../typings/RequestWithUser';
 
 @Injectable()
 export class AccessGuard implements CanActivate {
@@ -26,7 +27,7 @@ export class AccessGuard implements CanActivate {
         context.getClass()
       ]) || [];
 
-    const request = context.switchToHttp().getRequest();
+    const request: RequestWithUser = context.switchToHttp().getRequest();
     const user = request.user;
 
     if (!user) return false;
@@ -48,6 +49,6 @@ export class AccessGuard implements CanActivate {
       requiredPermissions.length === 0 ||
       requiredPermissions.some(perm => userPermissions.includes(perm));
 
-    return hasRole && hasPermission; // cumple con ambos, roles o permisos pueden ser vacíos
+    return hasRole && hasPermission;
   }
 }
