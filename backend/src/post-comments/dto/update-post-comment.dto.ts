@@ -7,7 +7,9 @@ export class UpdatePostCommentDto {
   @IsNotEmpty()
   content?: string;
 
-  @ApiPropertyOptional({ description: 'ID del autor (opcional para reasignar)' })
+  @ApiPropertyOptional({
+    description: 'ID del autor (opcional para reasignar)'
+  })
   @IsOptional()
   @IsInt()
   authorId?: number;
