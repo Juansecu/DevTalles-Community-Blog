@@ -280,7 +280,8 @@
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 0.75rem;
   border: 2px solid #3a2f6c;
@@ -292,20 +293,27 @@
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   outline: none;
   border-color: #6b46c1;
   box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
 }
 
 .form-group input.error,
-.form-group textarea.error {
+.form-group textarea.error,
+.form-group select.error {
   border-color: #ef4444;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
   color: #a0a0a0;
+}
+
+.form-group select option {
+  background: #1b1236;
+  color: #fff;
 }
 
 .help-text {
@@ -320,6 +328,75 @@
   margin-top: 0.25rem;
   color: #ef4444;
   font-size: 0.875rem;
+}
+
+/* Categories Multi-Select */
+.categories-multiselect {
+  border: 2px solid #3a2f6c;
+  border-radius: 8px;
+  background: #1b1236;
+  transition: border-color 0.3s ease;
+}
+
+.categories-multiselect:focus-within {
+  border-color: #6b46c1;
+  box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+}
+
+.categories-header {
+  padding: 0.75rem;
+  border-bottom: 1px solid #3a2f6c;
+  background: #252052;
+}
+
+.selected-count {
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}
+
+.categories-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.category-item {
+  border-bottom: 1px solid #2a1f5c;
+}
+
+.category-item:last-child {
+  border-bottom: none;
+}
+
+.category-label {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 0;
+}
+
+.category-label:hover {
+  background: #2a1f5c;
+}
+
+.category-label input[type='checkbox'] {
+  margin-right: 0.75rem;
+  width: 16px;
+  height: 16px;
+  accent-color: #6b46c1;
+}
+
+.category-name {
+  color: #fff;
+  font-size: 0.875rem;
+}
+
+.no-categories {
+  padding: 1rem;
+  text-align: center;
+  color: #a0a0a0;
+  font-style: italic;
 }
 
 .form-actions {

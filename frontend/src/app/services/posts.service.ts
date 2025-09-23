@@ -17,9 +17,16 @@ export class PostService {
   private apiUrl = environment.apiUrl || 'http://localhost:3000';
 
   private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
+
+    if (token) {
+      return headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
   }
 
   /**

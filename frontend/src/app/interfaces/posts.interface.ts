@@ -56,12 +56,14 @@ export interface CreatePostDto {
   body: string;
   bannerUrl: string;
   authorId: number;
+  categoryIds: number[];
 }
 
 export interface UpdatePostDto {
   title?: string;
   body?: string;
   bannerUrl?: string;
+  categoryIds?: number[];
 }
 
 export interface Comment {

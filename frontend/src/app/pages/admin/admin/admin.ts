@@ -2,7 +2,9 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { PostService } from '../../../services/posts.service';
 import { AuthService } from '../../../services/auth.service';
+import { CategoriesService } from '../../../services/categories.service';
 import { Post, CreatePostDto, UpdatePostDto } from '../../../interfaces/posts.interface';
+import { Category } from '../../../interfaces/category.interface';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,9 +17,12 @@ export class AdminComponent implements OnInit {
   private fb = inject(FormBuilder);
   private postService = inject(PostService);
   private authService = inject(AuthService);
+  private categoriesService = inject(CategoriesService);
 
   posts = signal<Post[]>([]);
+  categories = signal<Category[]>([]);
   selectedPost = signal<Post | null>(null);
+  selectedCategories = signal<number[]>([]);
   isEditing = signal<boolean>(false);
   showForm = signal<boolean>(false);
   selectedImage = signal<File | null>(null);
@@ -27,12 +32,13 @@ export class AdminComponent implements OnInit {
     title: ['', [Validators.required, Validators.minLength(3)]],
     description: ['', [Validators.required, Validators.minLength(10)]],
     image: ['', [Validators.required]],
-    category: ['', [Validators.required]]
+    categoryIds: [[], [Validators.required, Validators.minLength(1)]]
   });
 
   ngOnInit() {
     console.log('AdminComponent inicializado');
     this.loadPosts();
+    this.loadCategories();
   }
 
   async loadPosts() {
@@ -51,6 +57,18 @@ export class AdminComponent implements OnInit {
     } catch (error) {
       console.error('Error loading posts:', error);
       this.posts.set([]); // Fallback a array vacío en caso de error
+    }
+  }
+
+  async loadCategories() {
+    try {
+      console.log('Cargando categorías...');
+      const categories = await this.categoriesService.getAllCategories();
+      console.log('Categorías cargadas:', categories);
+      this.categories.set(categories);
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      this.categories.set([]);
     }
   }
 
@@ -73,8 +91,11 @@ export class AdminComponent implements OnInit {
       title: post.title,
       description: post.body, // description -> body
       image: post.bannerUrl, // image -> bannerUrl
-      category: '' // TODO: Implementar categorías cuando estén disponibles en Post
+      categoryIds: [] // TODO: Obtener categoryIds del post cuando esté disponible
     });
+
+    // TODO: Cuando el backend tenga las categorías del post, cargar selectedCategories
+    this.selectedCategories.set([]);
   }
 
   closeForm() {
@@ -82,7 +103,29 @@ export class AdminComponent implements OnInit {
     this.selectedPost.set(null);
     this.selectedImage.set(null);
     this.imagePreview.set(null);
+    this.selectedCategories.set([]);
     this.postForm.reset();
+  }
+
+  toggleCategory(categoryId: number) {
+    const currentSelected = this.selectedCategories();
+    const index = currentSelected.indexOf(categoryId);
+
+    if (index > -1) {
+      // Si ya está seleccionada, la removemos
+      const newSelected = currentSelected.filter(id => id !== categoryId);
+      this.selectedCategories.set(newSelected);
+    } else {
+      // Si no está seleccionada, la agregamos
+      this.selectedCategories.set([...currentSelected, categoryId]);
+    }
+
+    // Actualizar el form control
+    this.postForm.patchValue({ categoryIds: this.selectedCategories() });
+  }
+
+  isCategorySelected(categoryId: number): boolean {
+    return this.selectedCategories().includes(categoryId);
   }
 
   onImageSelect(event: Event) {
@@ -122,6 +165,9 @@ export class AdminComponent implements OnInit {
     if (this.postForm.valid && (this.selectedImage() || this.isEditing())) {
       const formData = this.postForm.value;
 
+      console.log('Form data:', formData);
+      console.log('Selected categories:', this.selectedCategories());
+
       const submitData = new FormData();
       submitData.append('title', formData.title);
       submitData.append('description', formData.description);
@@ -131,12 +177,12 @@ export class AdminComponent implements OnInit {
         submitData.append('image', this.selectedImage()!);
       }
 
-      formData.category
-        .split(',')
-        .map((cat: string) => cat.trim())
-        .forEach((category: string) => {
-          submitData.append('category[]', category);
+      // Agregar categoryIds al FormData
+      if (formData.categoryIds && formData.categoryIds.length > 0) {
+        formData.categoryIds.forEach((categoryId: number) => {
+          submitData.append('categoryIds[]', categoryId.toString());
         });
+      }
 
       const imageUrl = this.selectedImage()
         ? `/uploads/${this.selectedImage()!.name}`
@@ -153,15 +199,19 @@ export class AdminComponent implements OnInit {
         title: formData.title,
         body: formData.description, // description -> body
         bannerUrl: imageUrl, // image -> bannerUrl
-        authorId: currentUser.userId
+        authorId: currentUser.userId,
+        categoryIds: formData.categoryIds || [] // Usar directamente el array
       };
+
+      console.log('Post data to send:', postData);
 
       try {
         if (this.isEditing()) {
           const updateData: UpdatePostDto = {
             title: formData.title,
             body: formData.description,
-            bannerUrl: imageUrl
+            bannerUrl: imageUrl,
+            categoryIds: formData.categoryIds || []
           };
 
           const result = await this.postService.updatePost(
