@@ -1,0 +1,26 @@
+# Configuration Files
+*.editorconfig
+*eslint.config.mjs
+*prettierrc
+*tsconfig.json
+*tsconfig.build.json
+*tsconfig.node.json
+
+# Environment Files
+*.env
+
+# Documentation
+*.md
+LICENSE
+
+# Directories
+*dist*
+frontend
+infrastructure
+*node_modules*
+*test*
+*tests*
+
+# Version Control
+.git
+.gitignore
