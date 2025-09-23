@@ -139,8 +139,8 @@
             <div class="loading-comments">
               <p>Cargando comentarios...</p>
             </div>
-            } @else if (comments().length > 0) {
-            @for (comment of comments(); track comment.id) {
+            } @else if (comments().length > 0) { @for (comment of comments(); track
+            comment.id) {
             <div class="comment">
               <div class="comment-avatar">
                 <svg
@@ -156,14 +156,15 @@
               </div>
               <div class="comment-content">
                 <div class="comment-header">
-                  <span class="comment-author">{{ comment.author.firstName }} {{ comment.author.lastName }}</span>
+                  <span class="comment-author"
+                    >{{ comment.author.firstName }} {{ comment.author.lastName }}</span
+                  >
                 </div>
                 <p class="comment-text">{{ comment.content }}</p>
                 <span class="comment-time">{{ comment.postedAt | date:'short' }}</span>
               </div>
             </div>
-            }
-            } @else {
+            } } @else {
             <div class="no-comments">
               <p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
             </div>

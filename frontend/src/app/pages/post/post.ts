@@ -65,7 +65,7 @@ export class SinglePostComponent implements OnInit {
       console.log('Cargando comentarios para el post:', this.postId());
       const postIdNumber = parseInt(this.postId(), 10);
       const comments = await this.commentsService.getCommentsByPost(postIdNumber);
-      
+
       console.log('Comentarios recibidos:', comments);
       this.comments.set(comments);
     } catch (error) {

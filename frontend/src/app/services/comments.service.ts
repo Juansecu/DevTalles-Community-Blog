@@ -52,7 +52,10 @@ export class CommentsService {
       }
 
       const response = await firstValueFrom(
-        this.http.get<CommentsResponse>(`${this.apiUrl}/post-comments`, { headers, params })
+        this.http.get<CommentsResponse>(`${this.apiUrl}/post-comments`, {
+          headers,
+          params
+        })
       );
 
       console.log('Comentarios recibidos del backend:', response);
@@ -64,7 +67,10 @@ export class CommentsService {
         // En caso de que el backend devuelva directamente un array
         return response as PostComment[];
       } else {
-        console.warn('Backend devolvió estructura incorrecta para comentarios:', response);
+        console.warn(
+          'Backend devolvió estructura incorrecta para comentarios:',
+          response
+        );
         return [];
       }
     } catch (error) {
@@ -101,7 +107,9 @@ export class CommentsService {
       const headers = this.getHeaders();
 
       const response = await firstValueFrom(
-        this.http.post<PostComment>(`${this.apiUrl}/post-comments`, commentData, { headers })
+        this.http.post<PostComment>(`${this.apiUrl}/post-comments`, commentData, {
+          headers
+        })
       );
 
       console.log('Comentario creado exitosamente:', response);
@@ -115,12 +123,17 @@ export class CommentsService {
   /**
    * Actualizar un comentario
    */
-  async updateComment(id: number, commentData: UpdateCommentDto): Promise<PostComment | null> {
+  async updateComment(
+    id: number,
+    commentData: UpdateCommentDto
+  ): Promise<PostComment | null> {
     try {
       const headers = this.getHeaders();
 
       const response = await firstValueFrom(
-        this.http.put<PostComment>(`${this.apiUrl}/post-comments/${id}`, commentData, { headers })
+        this.http.put<PostComment>(`${this.apiUrl}/post-comments/${id}`, commentData, {
+          headers
+        })
       );
 
       return response;
