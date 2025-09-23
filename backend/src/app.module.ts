@@ -16,6 +16,7 @@ import { SharedModule } from './shared/shared.module';
     ConfigModule.forRoot({
       ignoreEnvFile: true,
       validationSchema: Joi.object({
+        CAPTCHA_SECRET_KEY: Joi.string().required(),
         CLOUDFLARE_R2_ACCESS_KEY_ID: Joi.string().required(),
         CLOUDFLARE_R2_BUCKET: Joi.string().required(),
         CLOUDFLARE_R2_BUCKET_HINT: Joi.string().optional().default('auto'),

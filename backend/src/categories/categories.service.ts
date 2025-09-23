@@ -5,7 +5,7 @@ import { Category } from './entities/category.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import {AuthUser} from "../auth/typings/auth-user";
+import { AuthUser } from '../auth/typings/auth-user';
 
 @Injectable()
 export class CategoriesService {

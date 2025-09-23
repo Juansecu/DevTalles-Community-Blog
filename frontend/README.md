@@ -8,9 +8,10 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 - **[pnpm](https://pnpm.io/) -** (v10.15.0 or higher)
 - **Environment variables:**
 
-    | Variable           | Type   | Description                                 | Required | Default | Example              |
-    |--------------------|--------|---------------------------------------------|----------|---------|----------------------|
-    | `CAPTCHA_SITE_KEY` | String |CAPTCHA site key for client-side integration | Yes      | None    | `<CAPTCHA Site Key>` |
+    | Variable           | Type   | Description                                  | Required | Default                    | Example                   |
+    |--------------------|--------|----------------------------------------------|----------|----------------------------|---------------------------|
+    | `API_URL`          | String | Base URL for the backend API                 | No       | `http://localhost:3000`    | `https://api.example.com` |
+    | `CAPTCHA_SITE_KEY` | String | CAPTCHA site key for client-side integration | Yes      | None                       | `<CAPTCHA Site Key>`      |
 
 ## Development server
 

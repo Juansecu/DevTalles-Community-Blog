@@ -190,10 +190,6 @@ export class AdminComponent implements OnInit {
         });
       }
 
-      const imageUrl = this.selectedImage()
-        ? `/uploads/${this.selectedImage()!.name}`
-        : formData.image;
-
       // Obtener el usuario autenticado para el authorId
       const currentUser = this.authService.currentUser();
       if (!currentUser) {

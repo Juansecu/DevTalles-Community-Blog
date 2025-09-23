@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, AfterViewInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import {
   FormBuilder,
@@ -11,16 +11,19 @@ import {
 import { UsersService } from '../../services/users.service';
 import { CreateUserDto } from '../../interfaces/user.interface';
 
+import { environment } from '../../../environments/environment';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.html',
   styleUrls: ['./register.scss'],
   imports: [RouterLink, ReactiveFormsModule]
 })
-export class RegisterComponent {
-  private fb = inject(FormBuilder);
-  private usersService = inject(UsersService);
-  private router = inject(Router);
+export class RegisterComponent implements AfterViewInit {
+  private readonly captchaSiteKey: string;
+  private readonly fb = inject(FormBuilder);
+  private readonly usersService = inject(UsersService);
+  private readonly router = inject(Router);
 
   isLoading = signal(false);
   errorMessage = signal('');
@@ -48,10 +51,36 @@ export class RegisterComponent {
       ],
       confirmPassword: ['', [Validators.required]],
       birthdate: ['', [Validators.required]],
-      agreeTerms: [false, [Validators.requiredTrue]]
+      agreeTerms: [false, [Validators.requiredTrue]],
+      turnstileToken: ['', [Validators.required]]
     },
     { validators: [this.passwordMatchValidator, this.emailMatchValidator] }
   );
+
+  constructor() {
+    this.captchaSiteKey = environment.captchaSiteKey;
+  }
+
+  ngAfterViewInit() {
+    const renderTurnstile = () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      if (window['turnstile'] && document.getElementById('turnstile-widget')) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        window['turnstile'].render('#turnstile-widget', {
+          sitekey: this.captchaSiteKey,
+          callback: (token: string) => {
+            this.registerForm.patchValue({ turnstileToken: token });
+          },
+          theme: 'dark'
+        });
+      } else {
+        setTimeout(renderTurnstile, 100);
+      }
+    };
+    renderTurnstile();
+  }
 
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');
@@ -95,7 +124,10 @@ export class RegisterComponent {
       };
 
       try {
-        const result = await this.usersService.createUser(userData);
+        const result = await this.usersService.createUser(
+          userData,
+          formData.turnstileToken
+        );
 
         if (result.success) {
           this.successMessage.set(

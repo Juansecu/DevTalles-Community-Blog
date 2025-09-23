@@ -1,8 +1,9 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, AfterViewInit } from '@angular/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { LoginDto } from '../../interfaces/auth.interface';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -10,11 +11,12 @@ import { LoginDto } from '../../interfaces/auth.interface';
   styleUrls: ['./login.scss'],
   imports: [RouterLink, ReactiveFormsModule]
 })
-export class LoginComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+export class LoginComponent implements OnInit, AfterViewInit {
+  private readonly captchaSiteKey: string;
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   isLoading = signal(false);
   errorMessage = signal('');
@@ -26,8 +28,13 @@ export class LoginComponent implements OnInit {
     password: [
       '',
       [Validators.required, Validators.minLength(8), Validators.maxLength(32)]
-    ]
+    ],
+    turnstileToken: ['', [Validators.required]]
   });
+
+  constructor() {
+    this.captchaSiteKey = environment.captchaSiteKey;
+  }
 
   ngOnInit() {
     // Obtener URL de retorno de los query params
@@ -38,6 +45,27 @@ export class LoginComponent implements OnInit {
     if (discordError) {
       this.errorMessage.set(discordError);
     }
+  }
+
+  ngAfterViewInit() {
+    const renderTurnstile = () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      if (window['turnstile'] && document.getElementById('turnstile-widget')) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        window['turnstile'].render('#turnstile-widget', {
+          sitekey: this.captchaSiteKey,
+          callback: (token: string) => {
+            this.loginForm.patchValue({ turnstileToken: token });
+          },
+          theme: 'dark'
+        });
+      } else {
+        setTimeout(renderTurnstile, 100);
+      }
+    };
+    renderTurnstile();
   }
 
   async onSubmit() {
@@ -52,7 +80,10 @@ export class LoginComponent implements OnInit {
       };
 
       try {
-        const result = await this.authService.login(credentials);
+        const result = await this.authService.login(
+          credentials,
+          this.loginForm.value.turnstileToken
+        );
 
         if (result.success) {
           this.successMessage.set('¡Inicio de sesión exitoso! Redirigiendo...');

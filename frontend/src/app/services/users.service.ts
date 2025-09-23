@@ -8,8 +8,8 @@ import { CreateUserDto, CreateUserResponse, User } from '../interfaces/user.inte
   providedIn: 'root'
 })
 export class UsersService {
-  private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl || 'http://localhost:3000';
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl || 'http://localhost:3000';
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
@@ -20,9 +20,13 @@ export class UsersService {
   /**
    * Crear un nuevo usuario
    */
-  async createUser(userData: CreateUserDto): Promise<CreateUserResponse> {
+  async createUser(
+    userData: CreateUserDto,
+    captchaToken: string
+  ): Promise<CreateUserResponse> {
     try {
-      const headers = this.getHeaders();
+      let headers = this.getHeaders();
+      headers = headers.set('X-Captcha-Token', captchaToken);
 
       const response = await firstValueFrom(
         this.http.post<User>(`${this.apiUrl}/users`, userData, { headers })

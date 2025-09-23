@@ -14,14 +14,14 @@ import {
   providedIn: 'root'
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private router = inject(Router);
-  private apiUrl = environment.apiUrl || 'http://localhost:3000';
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly apiUrl = environment.apiUrl || 'http://localhost:3000';
 
   // Signals para el estado de autenticación
-  private _currentUser = signal<AuthUser | null>(null);
-  private _isAuthenticated = signal<boolean>(false);
-  private _token = signal<string | null>(null);
+  private readonly _currentUser = signal<AuthUser | null>(null);
+  private readonly _isAuthenticated = signal<boolean>(false);
+  private readonly _token = signal<string | null>(null);
 
   // Getters públicos de solo lectura
   readonly currentUser = this._currentUser.asReadonly();
@@ -89,9 +89,11 @@ export class AuthService {
   /**
    * Iniciar sesión con email y contraseña
    */
-  async login(credentials: LoginDto): Promise<AuthResponse> {
+  async login(credentials: LoginDto, captchaToken: string): Promise<AuthResponse> {
     try {
-      const headers = this.getHeaders();
+      let headers = this.getHeaders();
+
+      headers = headers.set('X-Captcha-Token', captchaToken);
 
       const response = await firstValueFrom(
         this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials, {
@@ -213,24 +215,6 @@ export class AuthService {
       await this.logout();
       return null;
     }
-  }
-
-  /**
-   * Verificar si el usuario tiene un rol específico
-   */
-  hasRole(_role: string): boolean {
-    // const user = this._currentUser();
-    // Implementar lógica de roles si está disponible en el usuario
-    return false; // Por ahora retorna false hasta implementar roles
-  }
-
-  /**
-   * Verificar si el usuario tiene un permiso específico
-   */
-  hasPermission(_permission: string): boolean {
-    // const user = this._currentUser();
-    // Implementar lógica de permisos si está disponible en el usuario
-    return false; // Por ahora retorna false hasta implementar permisos
   }
 
   /**
