@@ -32,7 +32,7 @@ export class PostComment {
 
   // Autor del comentario
   @ManyToOne(() => User, user => user.comments, { nullable: false })
-  @JoinColumn({ name: 'User_id' })
+  @JoinColumn({ name: 'Author_id' })
   author: User;
 
   // Post al que pertenece
@@ -40,9 +40,9 @@ export class PostComment {
   @JoinColumn({ name: 'Post_id' })
   post: Post;
 
-  @CreateDateColumn({ name: 'Posted_at', type: 'timestamp' })
+  @CreateDateColumn({ name: 'Posted_at', type: 'timestamp', nullable: false })
   postedAt: Date;
 
-  @UpdateDateColumn({ name: 'Updated_at', type: 'timestamp' })
+  @UpdateDateColumn({ name: 'Updated_at', type: 'timestamp', nullable: false })
   updatedAt: Date;
 }

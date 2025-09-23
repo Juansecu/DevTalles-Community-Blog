@@ -26,6 +26,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AccessGuard } from '../auth/guards/access.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Access } from '../auth/decorators/access.decorator';
+import { CaptchaGuard } from '../shared/guards/captcha.guard';
 
 @ApiTags('Users') // Grupo en Swagger
 @Controller('users')
@@ -36,6 +37,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiResponse({ status: 201, description: 'Usuario creado correctamente.' })
   @ApiBody({ type: CreateUserDto })
+  @UseGuards(CaptchaGuard)
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }

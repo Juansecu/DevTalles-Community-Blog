@@ -7,7 +7,8 @@ import {
   Body,
   Param,
   Query,
-  ParseIntPipe
+  ParseIntPipe,
+  Req
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -20,6 +21,7 @@ import {
   ApiParam
 } from '@nestjs/swagger';
 import { Category } from './entities/category.entity';
+import type { RequestWithUser } from '../auth/typings/request-with-user';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -29,8 +31,11 @@ export class CategoriesController {
   @HttpPost()
   @ApiOperation({ summary: 'Crear una nueva categoría' })
   @ApiResponse({ status: 201, description: 'Categoría creada', type: Category })
-  create(@Body() dto: CreateCategoryDto) {
-    return this.categoriesService.create(dto);
+  async create(
+    @Body() dto: CreateCategoryDto,
+    @Req() request: RequestWithUser
+  ): Promise<Category> {
+    return await this.categoriesService.create(dto, request.user);
   }
 
   @Get()

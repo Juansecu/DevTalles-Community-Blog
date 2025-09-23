@@ -27,9 +27,37 @@ with specific requirements and setup instructions.
 Before starting, if you haven't created a Cloudflare R2 bucket
 or a Turnstile widget yet, please follow the instructions
 in this repository's wiki
-about [setting up Cloudflare Turnstile using Terraform templates](https://github.com/Juansecu/DevTalles-Community-Blog/wiki/setting-up-cloudflare-infrastructure#using-terraform-templates-recommended).
+about [setting up Cloudflare Infrastructure using Terraform templates](https://github.com/Juansecu/DevTalles-Community-Blog/wiki/setting-up-cloudflare-infrastructure#using-terraform-templates-recommended).
 
 To set up the entire project, follow these steps:
+
+### For Production
+
+1. Follow the instructions in the `backend/README.md` file to set up and deploy
+   the backend.
+2. Follow the instructions in the `frontend/README.md` file to set up and deploy
+   the frontend.
+3. Make sure to configure environment variables and any necessary settings
+   as described in the respective `README.md` files.
+4. Test the deployed application to ensure everything is working correctly.
+5. If you want to use Docker containers for deploying the backend,
+   you can use the provided `Dockerfile` and `compose.yml` files
+   at the root of the repository. Follow these instructions:
+
+    - Build the Docker image:
+
+        ```console
+        $ docker build -t devtalles-community-blog-backend .
+        ```
+
+    - Run the Docker container using Docker Compose:
+
+        ```console
+        $ docker compose up -d
+        ```
+
+    - Make sure to configure the necessary environment variables in the
+      `compose.yml` file before running the container.
 
 ### For Development
 

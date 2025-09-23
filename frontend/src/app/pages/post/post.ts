@@ -1,24 +1,31 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { PostService } from '../../services/posts.service';
-import { Post, Comment } from '../../interfaces/posts.interface';
+import { CommentsService } from '../../services/comments.service';
+import { AuthService } from '../../services/auth.service';
+import { Post, PostComment } from '../../interfaces/posts.interface';
 
 @Component({
   selector: 'app-post',
   templateUrl: './post.html',
   styleUrls: ['./post.scss'],
-  imports: [ReactiveFormsModule]
+  imports: [ReactiveFormsModule, DatePipe]
 })
 export class SinglePostComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private postService = inject(PostService);
+  private commentsService = inject(CommentsService);
+  public authService = inject(AuthService); // Made public for template access
 
   postId = signal<string>('');
   post = signal<Post | null>(null);
-  comments = signal<Comment[]>([]);
+  comments = signal<PostComment[]>([]);
   isLiking = signal<boolean>(false);
+  isLoadingComments = signal<boolean>(false);
+  isSubmittingComment = signal<boolean>(false);
 
   commentForm: FormGroup = this.fb.group({
     comment: ['', [Validators.required]]
@@ -38,19 +45,8 @@ export class SinglePostComponent implements OnInit {
       const postsData = await this.postService.getPost(postId);
 
       if (postsData) {
-        const fullPost: Post = {
-          id: postsData.id.toString(),
-          title: postsData.title,
-          content: postsData.description,
-          author: 'DevTalles Team',
-          publishedAt: '09/20/2025',
-          image: postsData.image,
-          categories: postsData.category,
-          likes: postsData.likes || 0,
-          isLiked: postsData.isLiked || false
-        };
-
-        this.post.set(fullPost);
+        // The postsData already has the correct Post interface structure
+        this.post.set(postsData);
       } else {
         console.error('Post not found');
         this.post.set(null);
@@ -61,70 +57,70 @@ export class SinglePostComponent implements OnInit {
     }
   }
 
-  private loadComments() {
-    const mockComments: Comment[] = [
-      {
-        id: '1',
-        author: 'Juan Pérez',
-        content: '¡Excelente post! Me ha sido muy útil la información.',
-        publishedAt: '2 hours ago'
-      },
-      {
-        id: '2',
-        author: 'María González',
-        content:
-          'Gracias por compartir este contenido. ¿Habrá más posts sobre este tema?',
-        publishedAt: '3 hours ago'
-      },
-      {
-        id: '3',
-        author: 'DevTalles Team',
-        content:
-          '¡Gracias por sus comentarios! Definitivamente habrá más contenido pronto.',
-        publishedAt: '5 hours ago',
-        isTeamMember: true
-      },
-      {
-        id: '4',
-        author: 'Carlos Ruiz',
-        content: 'Muy bien explicado, esperando el siguiente artículo.',
-        publishedAt: '1 day ago'
-      },
-      {
-        id: '5',
-        author: 'Ana Torres',
-        content: 'Perfect timing! Justo estaba buscando información sobre esto.',
-        publishedAt: '2 days ago'
-      },
-      {
-        id: '6',
-        author: 'Luis Martín',
-        content: 'Gran trabajo en el blog. Sigan así!',
-        publishedAt: '3 days ago'
-      }
-    ];
+  private async loadComments() {
+    if (!this.postId()) return;
 
-    this.comments.set(mockComments);
+    this.isLoadingComments.set(true);
+    try {
+      console.log('Cargando comentarios para el post:', this.postId());
+      const postIdNumber = parseInt(this.postId(), 10);
+      const comments = await this.commentsService.getCommentsByPost(postIdNumber);
+
+      console.log('Comentarios recibidos:', comments);
+      this.comments.set(comments);
+    } catch (error) {
+      console.error('Error cargando comentarios:', error);
+      this.comments.set([]);
+    } finally {
+      this.isLoadingComments.set(false);
+    }
   }
 
-  onSubmitComment() {
-    if (this.commentForm.valid) {
-      const commentText = this.commentForm.get('comment')?.value;
-
-      const newComment: Comment = {
-        id: Date.now().toString(),
-        author: 'Usuario Actual',
-        content: commentText,
-        publishedAt: 'Hace unos segundos'
-      };
-
-      const currentComments = this.comments();
-      this.comments.set([newComment, ...currentComments]);
-
-      this.commentForm.reset();
-    } else {
+  async onSubmitComment() {
+    if (!this.commentForm.valid) {
       console.log('Formulario de comentario no válido');
       this.commentForm.markAllAsTouched();
+      return;
+    }
+
+    const currentUserId = this.authService.getCurrentUserId();
+    if (!currentUserId) {
+      console.error('Usuario no autenticado');
+      // Aquí podrías mostrar un mensaje de error o redirigir al login
+      return;
+    }
+
+    const postIdNumber = parseInt(this.postId(), 10);
+    if (!postIdNumber) {
+      console.error('ID de post inválido');
+      return;
+    }
+
+    this.isSubmittingComment.set(true);
+    try {
+      const commentText = this.commentForm.get('comment')?.value;
+
+      const newCommentData = {
+        content: commentText,
+        postId: postIdNumber,
+        authorId: currentUserId
+      };
+
+      console.log('Creando nuevo comentario:', newCommentData);
+      const createdComment = await this.commentsService.createComment(newCommentData);
+
+      if (createdComment) {
+        console.log('Comentario creado exitosamente:', createdComment);
+        // Recargar todos los comentarios para obtener la información actualizada
+        await this.loadComments();
+        this.commentForm.reset();
+      } else {
+        console.error('Error al crear el comentario');
+      }
+    } catch (error) {
+      console.error('Error creando comentario:', error);
+    } finally {
+      this.isSubmittingComment.set(false);
     }
   }
 
@@ -139,12 +135,12 @@ export class SinglePostComponent implements OnInit {
       const postId = parseInt(this.postId(), 10);
       const result = await this.postService.toggleLike(postId);
 
-      if (result && this.post()) {
+      if (result.success && this.post()) {
         // Actualizar el post con los nuevos datos de likes
         const updatedPost = {
           ...this.post()!,
-          likes: result.likes,
-          isLiked: result.isLiked
+          likesCount: result.likes,
+          isLiked: !this.post()!.isLiked // Toggle the current state
         };
         this.post.set(updatedPost);
       }

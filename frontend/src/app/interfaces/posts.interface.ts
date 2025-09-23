@@ -1,24 +1,68 @@
-export interface Posts {
+export interface Author {
+  userId: number;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+}
+
+export interface Category {
+  categoryId: number;
+  name: string;
+  addedBy: Author;
+  addedAt: Date;
+  updatedAt: Date;
+}
+
+export interface PostComment {
   id: number;
-  title: string;
-  description: string;
-  category: string[];
-  image: string;
-  likes?: number;
-  isLiked?: boolean;
+  content: string;
+  author: Author;
+  postedAt: Date;
+  updatedAt: Date;
 }
 
 export interface Post {
-  id: string;
+  postId: number;
   title: string;
-  content: string;
-  author: string;
-  publishedAt: string;
+  body: string;
+  bannerUrl: string;
+  likesCount: number;
+  author: Author;
+  comments?: PostComment[];
+  postedAt: Date;
+  updatedAt: Date;
+  isLiked?: boolean; // Campo calculado del frontend
+}
+
+export interface Posts extends Post {
+  // Alias para compatibilidad con componentes existentes
+  id: number;
+  description: string;
+  categoryIds: string[];
   image: string;
-  categories: string[];
-  comments?: Comment[];
   likes?: number;
-  isLiked?: boolean;
+}
+
+export interface PostsResponse {
+  data: Post[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface CreatePostDto {
+  title: string;
+  body: string;
+  banner: string;
+  categoryIds: number[];
+}
+
+export interface UpdatePostDto {
+  title?: string;
+  body?: string;
+  banner?: string;
+  categoryIds?: number[];
 }
 
 export interface Comment {

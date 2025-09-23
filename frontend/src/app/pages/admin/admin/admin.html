@@ -31,25 +31,23 @@
           </tr>
         </thead>
         <tbody>
-          @if (posts().length === 0) {
+          @if (!posts() || posts().length === 0) {
           <tr>
             <td colspan="6" class="no-posts">No hay posts disponibles</td>
           </tr>
-          } @for (post of posts(); track post.id) {
+          } @else { @for (post of posts(); track post.postId) {
           <tr>
-            <td class="post-id">{{ post.id }}</td>
+            <td class="post-id">{{ post.postId }}</td>
             <td class="post-title">{{ post.title }}</td>
             <td class="post-description">
-              {{ post.description.length > 100 ? (post.description | slice:0:100) + '...'
-              : post.description }}
+              {{ post.body.length > 100 ? (post.body | slice:0:100) + '...' : post.body }}
             </td>
             <td class="post-categories">
-              @for (category of post.category; track $index) {
-              <span class="category-tag">{{ category }}</span>
-              }
+              <!-- TODO: Implementar categorías cuando estén disponibles en Post interface -->
+              <span class="category-tag">{{ post.author.username }}</span>
             </td>
             <td class="post-image">
-              <img [src]="post.image" [alt]="post.title" class="thumbnail" />
+              <img [src]="post.bannerUrl" [alt]="post.title" class="thumbnail" />
             </td>
             <td class="post-actions">
               <button class="btn btn-edit" (click)="openEditForm(post)" title="Editar">
@@ -60,7 +58,7 @@
               </button>
             </td>
           </tr>
-          }
+          } }
         </tbody>
       </table>
     </div>
@@ -144,17 +142,34 @@
           </div>
 
           <div class="form-group">
-            <label for="category">Categorías *</label>
-            <input
-              type="text"
-              id="category"
-              formControlName="category"
-              [class.error]="hasFieldError('category')"
-              placeholder="Categoría 1, Categoría 2, Categoría 3"
-            />
-            <small class="help-text">Separa las categorías con comas</small>
-            @if (hasFieldError('category')) {
-            <span class="error-message">{{ getFieldError('category') }}</span>
+            <label>Categorías *</label>
+            <div class="categories-multiselect">
+              <div class="categories-header">
+                <span class="selected-count">
+                  @if (selectedCategories().length === 0) { Selecciona categorías } @else
+                  { {{ selectedCategories().length }} categoría(s) seleccionada(s) }
+                </span>
+              </div>
+              <div class="categories-list">
+                @for (category of categories(); track category.categoryId) {
+                <div class="category-item">
+                  <label class="category-label">
+                    <input
+                      type="checkbox"
+                      [checked]="isCategorySelected(category.categoryId)"
+                      (change)="toggleCategory(category.categoryId)"
+                    />
+                    <span class="category-name">{{ category.name }}</span>
+                  </label>
+                </div>
+                } @if (categories().length === 0) {
+                <div class="no-categories">No hay categorías disponibles</div>
+                }
+              </div>
+            </div>
+            <small class="help-text">Selecciona una o más categorías para el post</small>
+            @if (hasFieldError('categoryIds')) {
+            <span class="error-message">{{ getFieldError('categoryIds') }}</span>
             }
           </div>
 

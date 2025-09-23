@@ -1,174 +1,192 @@
-import { Injectable } from '@angular/core';
-import { Posts } from '../interfaces/posts.interface';
-
-export const MOCK_POSTS: Posts[] = [
-  {
-    id: 1,
-    title: 'Post 1',
-    description: 'Description for Post 1',
-    category: [
-      'Category 1',
-      'Category 2',
-      'Category 3',
-      'Category 4',
-      'Category 5',
-      'Category 6'
-    ],
-    image: '/example.jpg',
-    likes: 24,
-    isLiked: false
-  },
-  {
-    id: 2,
-    title: 'Post 2',
-    description: 'Description for Post 2',
-    category: ['Category 2'],
-    image: '/example.jpg',
-    likes: 12,
-    isLiked: false
-  },
-  {
-    id: 3,
-    title: 'Post 3',
-    description: 'Description for Post 3',
-    category: ['Category 3'],
-    image: '/example.jpg',
-    likes: 8,
-    isLiked: true
-  },
-  {
-    id: 4,
-    title: 'Post 4',
-    description: 'Description for Post 4',
-    category: ['Category 4'],
-    image: '/example.jpg',
-    likes: 35,
-    isLiked: false
-  },
-  {
-    id: 5,
-    title: 'Post 5',
-    description: 'Description for Post 5',
-    category: ['Category 5'],
-    image: '/example.jpg',
-    likes: 19,
-    isLiked: true
-  },
-  {
-    id: 6,
-    title: 'Post 6',
-    description: 'Description for Post 6',
-    category: ['Category 6'],
-    image: '/example.jpg',
-    likes: 7,
-    isLiked: false
-  },
-  {
-    id: 7,
-    title: 'Post 7',
-    description: 'Description for Post 7',
-    category: ['Category 1', 'Category 4'],
-    image: '/example.jpg',
-    likes: 15,
-    isLiked: true
-  },
-  {
-    id: 8,
-    title: 'Post 8',
-    description: 'Description for Post 8',
-    category: ['Category 2', 'Category 5'],
-    image: '/example.jpg',
-    likes: 3,
-    isLiked: false
-  },
-  {
-    id: 9,
-    title: 'Post 9',
-    description: 'Description for Post 9',
-    category: ['Category 3', 'Category 6'],
-    image: '/example.jpg',
-    likes: 42,
-    isLiked: false
-  }
-];
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
+import {
+  Post,
+  CreatePostDto,
+  UpdatePostDto,
+  PostsResponse
+} from '../interfaces/posts.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
-  getAllPosts(): Promise<Posts[]> {
-    return Promise.resolve(MOCK_POSTS);
-  }
+  private http = inject(HttpClient);
+  private apiUrl = environment.apiUrl || 'http://localhost:3000';
 
-  getPost(id: number): Promise<Posts | undefined> {
-    const post = MOCK_POSTS.find(p => p.id === id);
-    return Promise.resolve(post);
-  }
-
-  createPost(post: Omit<Posts, 'id'>): Promise<Posts> {
-    const newPost: Posts = {
-      id: Date.now(),
-      ...post
-    };
-
-    MOCK_POSTS.push(newPost);
-
-    return Promise.resolve(newPost);
-  }
-
-  updatePost(id: number, post: Partial<Posts>): Promise<Posts | null> {
-    const index = MOCK_POSTS.findIndex(p => p.id === id);
-
-    if (index === -1) {
-      return Promise.resolve(null);
-    }
-
-    MOCK_POSTS[index] = { ...MOCK_POSTS[index], ...post };
-
-    return Promise.resolve(MOCK_POSTS[index]);
-  }
-
-  deletePost(id: number): Promise<boolean> {
-    const index = MOCK_POSTS.findIndex(p => p.id === id);
-
-    if (index === -1) {
-      return Promise.resolve(false);
-    }
-
-    MOCK_POSTS.splice(index, 1);
-
-    return Promise.resolve(true);
-  }
-
-  async toggleLike(id: number): Promise<{ likes: number; isLiked: boolean } | null> {
-    const post = MOCK_POSTS.find(p => p.id === id);
-
-    if (!post) {
-      return Promise.resolve(null);
-    }
-
-    post.isLiked = !post.isLiked;
-
-    // Actualizar contador de likes
-    if (post.isLiked) {
-      post.likes = (post.likes || 0) + 1;
-    } else {
-      post.likes = Math.max((post.likes || 1) - 1, 0);
-    }
-
-    return Promise.resolve({
-      likes: post.likes,
-      isLiked: post.isLiked
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
     });
+
+    if (token) {
+      return headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
   }
 
-  getLikesCount(id: number): Promise<number> {
-    const post = MOCK_POSTS.find(p => p.id === id);
-    return Promise.resolve(post?.likes || 0);
+  /**
+   * Obtener todos los posts con paginación
+   */
+  async getAllPosts(page = 1, limit = 10): Promise<Post[]> {
+    try {
+      console.log('Intentando conectar con backend en:', `${this.apiUrl}/posts`);
+
+      const headers = this.getHeaders();
+      const params = new HttpParams()
+        .set('page', page.toString())
+        .set('limit', limit.toString());
+
+      const response = await firstValueFrom(
+        this.http.get<PostsResponse>(`${this.apiUrl}/posts`, { headers, params })
+      );
+
+      console.log('Datos recibidos del backend:', response);
+
+      // Extraer el array de posts de la respuesta paginada
+      if (response && Array.isArray(response.data)) {
+        return response.data;
+      } else {
+        console.warn(
+          'Backend devolvió estructura incorrecta, usando fallback:',
+          response
+        );
+        return this.getMockPostsAsPost();
+      }
+    } catch (error) {
+      console.warn('Backend no disponible, usando datos mock:', error);
+      return this.getMockPostsAsPost(); // Fallback a datos mock
+    }
   }
 
-  isPostLiked(id: number): Promise<boolean> {
-    const post = MOCK_POSTS.find(p => p.id === id);
-    return Promise.resolve(post?.isLiked || false);
+  /**
+   * Obtener un post específico por ID
+   */
+  async getPost(id: number): Promise<Post | null> {
+    try {
+      const headers = this.getHeaders();
+
+      const response = await firstValueFrom(
+        this.http.get<Post>(`${this.apiUrl}/posts/${id}`, { headers })
+      );
+
+      return response;
+    } catch (error) {
+      console.error('Error fetching post:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Crear un nuevo post
+   */
+  async createPost(postData: CreatePostDto): Promise<Post | null> {
+    try {
+      const headers = this.getHeaders();
+
+      const response = await firstValueFrom(
+        this.http.post<Post>(`${this.apiUrl}/posts`, postData, { headers })
+      );
+
+      return response;
+    } catch (error) {
+      console.error('Error creating post:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Actualizar un post existente
+   */
+  async updatePost(id: number, postData: UpdatePostDto): Promise<Post | null> {
+    try {
+      const headers = this.getHeaders();
+
+      const response = await firstValueFrom(
+        this.http.put<Post>(`${this.apiUrl}/posts/${id}`, postData, { headers })
+      );
+
+      return response;
+    } catch (error) {
+      console.error('Error updating post:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Eliminar un post
+   */
+  async deletePost(id: number): Promise<boolean> {
+    try {
+      const headers = this.getHeaders();
+
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${id}`, { headers }));
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Toggle like en un post
+   */
+  async toggleLike(postId: number): Promise<{ success: boolean; likes: number }> {
+    try {
+      // TODO: Implementar endpoint de likes cuando esté disponible en el backend
+      // Por ahora, simular el comportamiento
+      const post = await this.getPost(postId);
+      if (post) {
+        const newLikes = post.isLiked ? post.likesCount - 1 : post.likesCount + 1;
+        return { success: true, likes: newLikes };
+      }
+      return { success: false, likes: 0 };
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      return { success: false, likes: 0 };
+    }
+  }
+
+  /**
+   * Obtener cantidad de likes de un post
+   */
+  async getLikesCount(postId: number): Promise<number> {
+    try {
+      const post = await this.getPost(postId);
+      return post?.likesCount || 0;
+    } catch (error) {
+      console.error('Error getting likes count:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Datos mock como Post[] para el nuevo formato
+   */
+  private getMockPostsAsPost(): Post[] {
+    return [
+      {
+        postId: 1,
+        title: 'Post de ejemplo',
+        body: 'Este es un post de ejemplo mientras se conecta con el backend. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        bannerUrl: '/example.jpg',
+        likesCount: 24,
+        isLiked: false,
+        author: {
+          userId: 1,
+          firstName: 'Usuario',
+          lastName: 'Ejemplo',
+          username: 'ejemplo',
+          email: 'ejemplo@test.com'
+        },
+        postedAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
   }
 }

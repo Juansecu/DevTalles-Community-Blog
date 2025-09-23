@@ -8,14 +8,16 @@ const developmentConfigurationTargetPath =
 const developmentEnvironmentConfigFile = `
 export const environment = {
   production: false,
-  captchaSiteKey: '${process.env.CAPTCHA_SITE_KEY || ''}'
+  apiUrl: '${process.env.API_URL || 'http://localhost:3000'}',
+  captchaSiteKey: '${process.env.CAPTCHA_SITE_KEY || ''}',
 };
 `;
 const productionConfigurationTargetPath = './src/environments/environment.production.ts';
 const productionEnvironmentConfigFile = `
 export const environment = {
   production: true,
-  captchaSiteKey: '${process.env.CAPTCHA_SITE_KEY || ''}'
+  captchaSiteKey: '${process.env.CAPTCHA_SITE_KEY || ''}',
+  apiUrl: '${process.env.API_URL || 'http://localhost:3000'}',
 };
 `;
 

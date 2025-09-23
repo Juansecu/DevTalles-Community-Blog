@@ -7,6 +7,7 @@
         class="btn btn-discord"
         type="button"
         aria-label="iniciar sesión con discord"
+        (click)="loginWithDiscord()"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" style="width: 30px">
           <path
@@ -27,6 +28,16 @@
         (ngSubmit)="onSubmit()"
         aria-label="formulario de inicio de sesión"
       >
+        <!-- Mensajes de estado -->
+        @if (errorMessage()) {
+        <div class="alert alert-error">
+          <span>{{ errorMessage() }}</span>
+        </div>
+        } @if (successMessage()) {
+        <div class="alert alert-success">
+          <span>{{ successMessage() }}</span>
+        </div>
+        }
         <label class="field">
           <span class="field-label">Correo electrónico</span>
           <input
@@ -66,7 +77,21 @@
           <a class="forgot" href="#">¿Olvidaste tu contraseña?</a>
         </div>
 
-        <button class="btn btn-primary" type="submit">INICIAR SESIÓN</button>
+        <!-- Cloudflare Turnstile Widget -->
+        <div id="turnstile-widget" class="cf-turnstile"></div>
+        <!-- End Cloudflare Turnstile Widget -->
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="isLoading() || !loginForm.valid"
+        >
+          @if (isLoading()) {
+          <span>Iniciando sesión...</span>
+          } @else {
+          <span>INICIAR SESIÓN</span>
+          }
+        </button>
 
         <p class="signup">
           ¿Aún no tienes tu cuenta de DevTalles?

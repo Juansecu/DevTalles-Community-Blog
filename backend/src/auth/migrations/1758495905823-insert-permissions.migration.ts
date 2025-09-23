@@ -33,8 +33,8 @@ export class InsertPermissionsMigration1758495905823
     ];
 
     await queryRunner.query(`
-      DELETE FROM Permissions
-      WHERE Permission_id IN (${permissionIds.join(', ')});
+      DELETE FROM "Permissions"
+      WHERE "Permission_id" IN (${permissionIds.join(', ')});
     `);
   }
 }

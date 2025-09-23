@@ -4,7 +4,7 @@
     <section class="post-hero">
       <h1 class="post-title">{{ post()!.title }}</h1>
       <div class="post-image">
-        <img [src]="post()!.image" [alt]="post()!.title" />
+        <img [src]="post()!.bannerUrl" [alt]="post()!.title" />
       </div>
     </section>
 
@@ -25,8 +25,12 @@
               </svg>
             </div>
             <div class="author-details">
-              <span class="author-name">{{ post()!.author }}</span>
-              <span class="post-date">Posted at {{ post()!.publishedAt }}</span>
+              <span class="author-name"
+                >{{ post()!.author.firstName }} {{ post()!.author.lastName }}</span
+              >
+              <span class="post-date"
+                >Posted at {{ post()!.postedAt | date:'short' }}</span
+              >
             </div>
           </div>
 
@@ -58,21 +62,20 @@
                 />
                 }
               </svg>
-              <span class="like-count">{{ post()!.likes || 0 }}</span>
+              <span class="like-count">{{ post()!.likesCount || 0 }}</span>
             </button>
           </div>
         </header>
 
         <!-- Post Content -->
         <div class="post-body">
+          <!-- TODO: Add categories when available in Post interface -->
           <div class="post-categories">
-            @for (category of post()!.categories; track $index) {
-            <span class="category-tag">{{ category }}</span>
-            }
+            <span class="category-tag">By {{ post()!.author.username }}</span>
           </div>
 
           <div class="post-text">
-            @for (paragraph of post()!.content.split('\n\n'); track $index) {
+            @for (paragraph of post()!.body.split('\n\n'); track $index) {
             <p>{{ paragraph }}</p>
             }
           </div>
@@ -83,6 +86,7 @@
           <h3 class="comments-title">Comentarios</h3>
 
           <!-- Comment Form -->
+          @if (authService.isAuthenticated()) {
           <form
             class="comment-form"
             [formGroup]="commentForm"
@@ -116,17 +120,27 @@
                   <button
                     type="submit"
                     class="btn-submit"
-                    [disabled]="commentForm.invalid"
+                    [disabled]="commentForm.invalid || isSubmittingComment()"
                   >
-                    Publicar comentario
+                    {{ isSubmittingComment() ? 'Publicando...' : 'Publicar comentario' }}
                   </button>
                 </div>
               </div>
             </div>
           </form>
+          } @else {
+          <div class="login-prompt">
+            <p>Debes <a href="/login">iniciar sesión</a> para poder comentar.</p>
+          </div>
+          }
 
           <div class="punlished-comments">
-            @for (comment of comments(); track comment.id) {
+            @if (isLoadingComments()) {
+            <div class="loading-comments">
+              <p>Cargando comentarios...</p>
+            </div>
+            } @else if (comments().length > 0) { @for (comment of comments(); track
+            comment.id) {
             <div class="comment">
               <div class="comment-avatar">
                 <svg
@@ -142,14 +156,17 @@
               </div>
               <div class="comment-content">
                 <div class="comment-header">
-                  <span class="comment-author">{{ comment.author }}</span>
-                  @if (comment.isTeamMember) {
-                  <span class="team-badge">DevTalles Team</span>
-                  }
+                  <span class="comment-author"
+                    >{{ comment.author.firstName }} {{ comment.author.lastName }}</span
+                  >
                 </div>
                 <p class="comment-text">{{ comment.content }}</p>
-                <span class="comment-time">{{ comment.publishedAt }}</span>
+                <span class="comment-time">{{ comment.postedAt | date:'short' }}</span>
               </div>
+            </div>
+            } } @else {
+            <div class="no-comments">
+              <p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
             </div>
             }
           </div>

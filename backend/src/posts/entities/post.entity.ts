@@ -6,10 +6,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  JoinColumn
+  JoinColumn,
+  ManyToMany
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { PostComment } from 'src/post-comments/entities/post-comment.entity';
+import { PostLike } from './post-like.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity('Posts')
 export class Post {
@@ -19,22 +22,28 @@ export class Post {
   @Column({ name: 'Title', type: 'varchar', length: 100 })
   title: string;
 
-  @Column({ name: 'Body', type: 'text' })
+  @Column({ name: 'Body', type: 'text', nullable: false })
   body: string;
 
   @Column({ name: 'Banner_url', type: 'varchar', length: 100 })
   bannerUrl: string;
 
   @ManyToOne(() => User, user => user.posts, { nullable: false })
-  @JoinColumn({ name: 'User_id' })
+  @JoinColumn({ name: 'Author_id' })
   author: User;
 
   @OneToMany(() => PostComment, comment => comment.post)
   comments: PostComment[];
 
-  @CreateDateColumn({ name: 'Posted_at', type: 'timestamp' })
+  @CreateDateColumn({ name: 'Posted_at', type: 'timestamp', nullable: false })
   postedAt: Date;
 
-  @UpdateDateColumn({ name: 'Updated_at', type: 'timestamp' })
+  @UpdateDateColumn({ name: 'Updated_at', type: 'timestamp', nullable: false })
   updatedAt: Date;
+
+  @OneToMany(() => PostLike, like => like.postId)
+  likes: PostLike[];
+
+  @ManyToMany(() => Category, category => category.posts)
+  categories: Category[];
 }

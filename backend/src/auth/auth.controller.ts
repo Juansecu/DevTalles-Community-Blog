@@ -31,6 +31,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { AuthUser } from './typings/auth-user';
+import { CaptchaGuard } from '../shared/guards/captcha.guard';
 
 export interface RequestWithUser extends Request {
   user: AuthUser;
@@ -53,6 +54,7 @@ export class AuthController {
     status: 200,
     description: 'Login exitoso, devuelve usuario y token'
   })
+  @UseGuards(CaptchaGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async login(@Body() dto: CreateAuthDto, @Res() res: Response) {
     const { user, token } = await this.authService.validateUser(

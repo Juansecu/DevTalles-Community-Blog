@@ -23,6 +23,16 @@
         (ngSubmit)="onSubmit()"
         aria-label="formulario de registro"
       >
+        <!-- Mensajes de estado -->
+        @if (errorMessage()) {
+        <div class="alert alert-error">
+          <span>{{ errorMessage() }}</span>
+        </div>
+        } @if (successMessage()) {
+        <div class="alert alert-success">
+          <span>{{ successMessage() }}</span>
+        </div>
+        }
         <div class="row two-cols">
           <label class="field">
             <span class="field-label">Nombre(s)</span>
@@ -101,6 +111,20 @@
         </label>
 
         <label class="field">
+          <span class="field-label">Fecha de nacimiento</span>
+          <input
+            class="input"
+            [class.error]="hasBirthdateError()"
+            type="date"
+            formControlName="birthdate"
+            required
+          />
+          @if (hasBirthdateError()) {
+          <span class="error-message">{{ getBirthdateError() }}</span>
+          }
+        </label>
+
+        <label class="field">
           <span class="field-label">Contraseña</span>
           <input
             class="input"
@@ -142,7 +166,21 @@
           }
         </label>
 
-        <button class="btn btn-primary" type="submit">REGISTRARSE</button>
+        <!-- Cloudflare Turnstile Widget -->
+        <div id="turnstile-widget" class="cf-turnstile"></div>
+        <!-- End Cloudflare Turnstile Widget -->
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="isLoading() || !registerForm.valid"
+        >
+          @if (isLoading()) {
+          <span>Creando cuenta...</span>
+          } @else {
+          <span>REGISTRARSE</span>
+          }
+        </button>
 
         <p class="signin-link"><a routerLink="/login">Ya tengo una cuenta</a></p>
       </form>

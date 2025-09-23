@@ -5,6 +5,7 @@ import { Category } from './entities/category.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { AuthUser } from '../auth/typings/auth-user';
 
 @Injectable()
 export class CategoriesService {
@@ -14,15 +15,16 @@ export class CategoriesService {
     @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
-  async create(dto: CreateCategoryDto): Promise<Category> {
-    const user = await this.userRepository.findOne({
-      where: { userId: dto.addedById }
+  async create(dto: CreateCategoryDto, user: AuthUser): Promise<Category> {
+    const author: User | null = await this.userRepository.findOne({
+      where: { userId: user?.userId }
     });
-    if (!user) throw new NotFoundException('Usuario no encontrado');
+
+    if (!author) throw new NotFoundException('Usuario no encontrado');
 
     const category = this.categoryRepository.create({
       name: dto.name,
-      addedBy: user
+      addedBy: author
     });
 
     return this.categoryRepository.save(category);

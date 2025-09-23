@@ -9,12 +9,20 @@ import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { CategoriesModule } from './categories/categories.module';
 import { PostCommentsModule } from './post-comments/post-comments.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       ignoreEnvFile: true,
       validationSchema: Joi.object({
+        CAPTCHA_SECRET_KEY: Joi.string().required(),
+        CLOUDFLARE_R2_ACCESS_KEY_ID: Joi.string().required(),
+        CLOUDFLARE_R2_BUCKET: Joi.string().required(),
+        CLOUDFLARE_R2_BUCKET_HINT: Joi.string().optional().default('auto'),
+        CLOUDFLARE_R2_ENDPOINT: Joi.string().uri().required(),
+        CLOUDFLARE_R2_PUBLIC_DOMAIN: Joi.string().uri().required(),
+        CLOUDFLARE_R2_SECRET_ACCESS_KEY: Joi.string().required(),
         CORS_ALLOWED_ORIGINS: Joi.string().required(),
         DISCORD_CALLBACK_URL: Joi.string().required(),
         DISCORD_CLIENT_ID: Joi.string().required(),
@@ -45,7 +53,8 @@ import { PostCommentsModule } from './post-comments/post-comments.module';
     AuthModule,
     PostsModule,
     CategoriesModule,
-    PostCommentsModule
+    PostCommentsModule,
+    SharedModule
   ],
   controllers: [AppController],
   providers: [AppService]

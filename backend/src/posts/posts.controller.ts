@@ -8,7 +8,9 @@ import {
   Body,
   Param,
   Query,
-  ParseIntPipe
+  ParseIntPipe,
+  Req,
+  UseGuards
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -18,9 +20,18 @@ import {
   ApiOperation,
   ApiResponse,
   ApiQuery,
-  ApiParam
+  ApiParam,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiNotFoundResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse
 } from '@nestjs/swagger';
-import { Post as PostEntity } from './entities/post.entity';
+import { Post, Post as PostEntity } from './entities/post.entity';
+import type { RequestWithUser } from '../auth/typings/request-with-user';
+import { AuthGuard } from '@nestjs/passport';
+import { AccessGuard } from '../auth/guards/access.guard';
+import { Access } from '../auth/decorators/access.decorator';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -28,10 +39,16 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @HttpPost()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), AccessGuard)
+  @Access([], ['CREATE_POST'])
   @ApiOperation({ summary: 'Crear un nuevo post' })
   @ApiResponse({ status: 201, description: 'Post creado', type: PostEntity })
-  create(@Body() dto: CreatePostDto) {
-    return this.postsService.create(dto);
+  async create(
+    @Body() dto: CreatePostDto,
+    @Req() request: RequestWithUser
+  ): Promise<Post> {
+    return await this.postsService.create(dto, request.user);
   }
 
   @Get()
@@ -61,5 +78,28 @@ export class PostsController {
   @ApiParam({ name: 'id', type: Number })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.remove(id);
+  }
+
+  @Put(':postId/like')
+  @ApiBearerAuth()
+  @ApiForbiddenResponse({ description: 'Forbidden - Insufficient permissions' })
+  @ApiNotFoundResponse({ description: 'Not Found - Post not found' })
+  @ApiOkResponse({ description: 'OK - Post liked successfully' })
+  @ApiOperation({ summary: 'Like a post' })
+  @ApiParam({
+    name: 'postId',
+    type: Number,
+    description: 'ID of the post to like'
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized - Invalid or missing token'
+  })
+  @UseGuards(AuthGuard('jwt'), AccessGuard)
+  @Access([], ['LIKE_POSTS'])
+  likePost(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Req() request: RequestWithUser
+  ) {
+    return this.postsService.updateLikesCount(postId, request.user);
   }
 }
