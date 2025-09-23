@@ -32,6 +32,12 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     // Obtener URL de retorno de los query params
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+    // Verificar si hay error de Discord
+    const discordError = this.route.snapshot.queryParams['error'];
+    if (discordError) {
+      this.errorMessage.set(discordError);
+    }
   }
 
   async onSubmit() {
@@ -100,5 +106,12 @@ export class LoginComponent implements OnInit {
   hasPasswordError(): boolean {
     const passwordControl = this.loginForm.get('password');
     return passwordControl?.invalid && passwordControl?.touched ? true : false;
+  }
+
+  /**
+   * Iniciar login con Discord
+   */
+  loginWithDiscord(): void {
+    this.authService.handleDiscordCallback();
   }
 }

@@ -4,6 +4,7 @@ import { LoginComponent } from './pages/login/login';
 import { RegisterComponent } from './pages/register/register';
 import { SinglePostComponent } from './pages/post/post';
 import { AdminComponent } from './pages/admin/admin/admin';
+import { DiscordCallbackComponent } from './pages/discord-callback/discord-callback.component';
 import { authGuard, guestGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -29,5 +30,9 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminComponent,
     canActivate: [authGuard]
+  },
+  {
+    path: 'auth/discord/callback',
+    component: DiscordCallbackComponent
   }
 ];
