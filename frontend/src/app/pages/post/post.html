@@ -86,6 +86,7 @@
           <h3 class="comments-title">Comentarios</h3>
 
           <!-- Comment Form -->
+          @if (authService.isAuthenticated()) {
           <form
             class="comment-form"
             [formGroup]="commentForm"
@@ -119,17 +120,27 @@
                   <button
                     type="submit"
                     class="btn-submit"
-                    [disabled]="commentForm.invalid"
+                    [disabled]="commentForm.invalid || isSubmittingComment()"
                   >
-                    Publicar comentario
+                    {{ isSubmittingComment() ? 'Publicando...' : 'Publicar comentario' }}
                   </button>
                 </div>
               </div>
             </div>
           </form>
+          } @else {
+          <div class="login-prompt">
+            <p>Debes <a href="/login">iniciar sesión</a> para poder comentar.</p>
+          </div>
+          }
 
           <div class="punlished-comments">
-            @for (comment of comments(); track comment.id) {
+            @if (isLoadingComments()) {
+            <div class="loading-comments">
+              <p>Cargando comentarios...</p>
+            </div>
+            } @else if (comments().length > 0) { @for (comment of comments(); track
+            comment.id) {
             <div class="comment">
               <div class="comment-avatar">
                 <svg
@@ -145,14 +156,17 @@
               </div>
               <div class="comment-content">
                 <div class="comment-header">
-                  <span class="comment-author">{{ comment.author }}</span>
-                  @if (comment.isTeamMember) {
-                  <span class="team-badge">DevTalles Team</span>
-                  }
+                  <span class="comment-author"
+                    >{{ comment.author.firstName }} {{ comment.author.lastName }}</span
+                  >
                 </div>
                 <p class="comment-text">{{ comment.content }}</p>
-                <span class="comment-time">{{ comment.publishedAt }}</span>
+                <span class="comment-time">{{ comment.postedAt | date:'short' }}</span>
               </div>
+            </div>
+            } } @else {
+            <div class="no-comments">
+              <p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
             </div>
             }
           </div>

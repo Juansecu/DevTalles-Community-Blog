@@ -232,4 +232,12 @@ export class AuthService {
     // Implementar lógica de permisos si está disponible en el usuario
     return false; // Por ahora retorna false hasta implementar permisos
   }
+
+  /**
+   * Obtener el ID del usuario actual
+   */
+  getCurrentUserId(): number | null {
+    const user = this._currentUser();
+    return user?.userId || null;
+  }
 }

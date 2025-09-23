@@ -31,15 +31,26 @@ export class AdminComponent implements OnInit {
   });
 
   ngOnInit() {
+    console.log('AdminComponent inicializado');
     this.loadPosts();
   }
 
   async loadPosts() {
     try {
+      console.log('Cargando posts...');
       const posts = await this.postService.getAllPosts();
-      this.posts.set(posts);
+      console.log('Posts cargados:', posts);
+
+      // Verificar que posts sea un array
+      if (Array.isArray(posts)) {
+        this.posts.set(posts);
+      } else {
+        console.error('Los posts no son un array:', posts);
+        this.posts.set([]); // Fallback a array vacío
+      }
     } catch (error) {
       console.error('Error loading posts:', error);
+      this.posts.set([]); // Fallback a array vacío en caso de error
     }
   }
 
@@ -144,8 +155,6 @@ export class AdminComponent implements OnInit {
         bannerUrl: imageUrl, // image -> bannerUrl
         authorId: currentUser.userId
       };
-
-      console.log(postData);
 
       try {
         if (this.isEditing()) {
