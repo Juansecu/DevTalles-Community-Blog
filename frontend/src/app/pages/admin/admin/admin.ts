@@ -129,9 +129,15 @@ export class AdminComponent implements OnInit {
   }
 
   onImageSelect(event: Event) {
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+
+      if (file.size > MAX_IMAGE_SIZE) {
+        alert('La imagen seleccionada supera el límite de 10MB. Por favor, selecciona una imagen más pequeña.');
+        return;
+      }
 
       const allowedTypes = [
         'image/jpeg',
