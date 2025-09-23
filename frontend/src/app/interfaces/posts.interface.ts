@@ -45,11 +45,10 @@ export interface Posts extends Post {
 }
 
 export interface PostsResponse {
-  posts: Post[];
+  data: Post[];
   total: number;
   page: number;
   limit: number;
-  totalPages: number;
 }
 
 export interface CreatePostDto {

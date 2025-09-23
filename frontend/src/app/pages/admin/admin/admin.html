@@ -31,11 +31,11 @@
           </tr>
         </thead>
         <tbody>
-          @if (posts().length === 0) {
+          @if (!posts() || posts().length === 0) {
           <tr>
             <td colspan="6" class="no-posts">No hay posts disponibles</td>
           </tr>
-          } @for (post of posts(); track post.postId) {
+          } @else { @for (post of posts(); track post.postId) {
           <tr>
             <td class="post-id">{{ post.postId }}</td>
             <td class="post-title">{{ post.title }}</td>
@@ -58,7 +58,7 @@
               </button>
             </td>
           </tr>
-          }
+          } }
         </tbody>
       </table>
     </div>

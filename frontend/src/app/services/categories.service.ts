@@ -26,18 +26,36 @@ export class CategoriesService {
    */
   async getAllCategories(page = 1, limit = 10): Promise<Category[]> {
     try {
+      console.log(
+        'CategoriesService: Intentando conectar con backend en:',
+        `${this.apiUrl}/categories`
+      );
+
       const headers = this.getHeaders();
       const params = new HttpParams()
         .set('page', page.toString())
         .set('limit', limit.toString());
 
       const response = await firstValueFrom(
-        this.http.get<Category[]>(`${this.apiUrl}/categories`, { headers, params })
+        this.http.get<unknown>(`${this.apiUrl}/categories`, { headers, params })
       );
 
-      return response;
+      console.log('CategoriesService: Datos recibidos del backend:', response);
+
+      // Verificar si es una respuesta paginada como los posts
+      const responseObj = response as { data?: Category[] };
+      if (response && typeof response === 'object' && Array.isArray(responseObj.data)) {
+        return responseObj.data;
+      } else if (Array.isArray(response)) {
+        return response;
+      } else {
+        console.warn(
+          'CategoriesService: Estructura de respuesta inesperada, usando fallback'
+        );
+        return this.getMockCategories();
+      }
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error('CategoriesService: Error fetching categories:', error);
       return this.getMockCategories(); // Fallback a datos mock
     }
   }

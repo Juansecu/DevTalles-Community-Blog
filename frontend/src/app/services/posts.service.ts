@@ -2,7 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Post, CreatePostDto, UpdatePostDto } from '../interfaces/posts.interface';
+import {
+  Post,
+  CreatePostDto,
+  UpdatePostDto,
+  PostsResponse
+} from '../interfaces/posts.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -30,11 +35,21 @@ export class PostService {
         .set('limit', limit.toString());
 
       const response = await firstValueFrom(
-        this.http.get<Post[]>(`${this.apiUrl}/posts`, { headers, params })
+        this.http.get<PostsResponse>(`${this.apiUrl}/posts`, { headers, params })
       );
 
       console.log('Datos recibidos del backend:', response);
-      return response;
+
+      // Extraer el array de posts de la respuesta paginada
+      if (response && Array.isArray(response.data)) {
+        return response.data;
+      } else {
+        console.warn(
+          'Backend devolvió estructura incorrecta, usando fallback:',
+          response
+        );
+        return this.getMockPostsAsPost();
+      }
     } catch (error) {
       console.warn('Backend no disponible, usando datos mock:', error);
       return this.getMockPostsAsPost(); // Fallback a datos mock

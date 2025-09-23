@@ -26,45 +26,45 @@ export class PostsComponent {
 
   async getAllPosts() {
     try {
+      console.log('PostsComponent: Cargando posts...');
       const posts = await this.postService.getAllPosts();
-      this.posts.set(posts);
+      console.log('PostsComponent: Posts recibidos:', posts);
+
+      // Verificar que posts sea un array
+      if (Array.isArray(posts)) {
+        this.posts.set(posts);
+        console.log('PostsComponent: Posts configurados correctamente');
+      } else {
+        console.error('PostsComponent: Posts no es un array:', posts);
+        this.posts.set([]);
+      }
     } catch (error) {
-      console.error('Error loading posts:', error);
+      console.error('PostsComponent: Error loading posts:', error);
+      this.posts.set([]);
     }
   }
 
   async getAllCategories() {
     try {
+      console.log('PostsComponent: Cargando categorías...');
       const categories = await this.categoriesService.getAllCategories();
-      this.categories.set(categories);
+      console.log('PostsComponent: Categorías recibidas:', categories);
+
+      // Verificar que categories sea un array
+      if (Array.isArray(categories)) {
+        this.categories.set(categories);
+        console.log('PostsComponent: Categorías configuradas correctamente');
+      } else {
+        console.error('PostsComponent: Categories no es un array:', categories);
+        this.categories.set([]);
+      }
     } catch (error) {
-      console.error('Error loading categories:', error);
+      console.error('PostsComponent: Error loading categories:', error);
+      this.categories.set([]);
     }
   }
 
   postClickeable(postId: number): void {
     this.router.navigate(['/posts', postId]);
-  }
-
-  async togglePostLike(postId: number, event: Event): Promise<void> {
-    // Prevenir que se navegue al post cuando se hace clic en el botón de like
-    event.stopPropagation();
-
-    try {
-      const result = await this.postService.toggleLike(postId);
-
-      if (result.success) {
-        // Actualizar el post específico en la lista
-        const currentPosts = this.posts();
-        const updatedPosts = currentPosts.map(post =>
-          post.postId === postId
-            ? { ...post, likesCount: result.likes, isLiked: !post.isLiked }
-            : post
-        );
-        this.posts.set(updatedPosts);
-      }
-    } catch (error) {
-      console.error('Error toggling like:', error);
-    }
   }
 }
