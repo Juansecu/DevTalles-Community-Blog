@@ -5,12 +5,21 @@ import { Post } from './entities/post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { User } from '../users/entities/user.entity';
+import { AuthUser } from '../auth/typings/auth-user';
+import { PostLike } from './entities/post-like.entity';
+import { PostWithLikesViewEntity } from './entities/post-with-likes.view-entity';
 
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post) private readonly postRepository: Repository<Post>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
+    @InjectRepository(PostLike)
+    private readonly postLikeRepository: Repository<PostLike>,
+    @InjectRepository(PostWithLikesViewEntity)
+    private readonly postWithLikesViewRepository: Repository<PostWithLikesViewEntity>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>
   ) {}
 
   async create(dto: CreatePostDto): Promise<Post> {
@@ -60,5 +69,33 @@ export class PostsService {
   async remove(postId: number): Promise<void> {
     const post = await this.findOne(postId);
     await this.postRepository.remove(post);
+  }
+
+  async updateLikesCount(postId: number, user: AuthUser): Promise<void> {
+    const post: Post | null = await this.postRepository.findOne({
+      select: ['postId'],
+      where: { postId: postId }
+    });
+
+    if (!post) throw new NotFoundException('Post no encontrado');
+
+    const existingLike: PostLike | null = await this.postLikeRepository.findOne(
+      {
+        where: { postId: postId, userId: user.userId }
+      }
+    );
+
+    if (!existingLike) {
+      const newLike = this.postLikeRepository.create({
+        postId: postId,
+        userId: user.userId
+      });
+
+      await this.postLikeRepository.save(newLike);
+
+      return;
+    }
+
+    await this.postLikeRepository.remove(existingLike);
   }
 }

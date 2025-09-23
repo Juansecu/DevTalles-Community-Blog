@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { PostComment } from 'src/post-comments/entities/post-comment.entity';
+import { PostLike } from './post-like.entity';
 
 @Entity('Posts')
 export class Post {
@@ -25,11 +26,8 @@ export class Post {
   @Column({ name: 'Banner_url', type: 'varchar', length: 100 })
   bannerUrl: string;
 
-  @Column({ name: 'Likes_count', type: 'int', default: 0 })
-  likesCount: number;
-
   @ManyToOne(() => User, user => user.posts, { nullable: false })
-  @JoinColumn({ name: 'User_id' })
+  @JoinColumn({ name: 'Author_id' })
   author: User;
 
   @OneToMany(() => PostComment, comment => comment.post)
@@ -40,4 +38,7 @@ export class Post {
 
   @UpdateDateColumn({ name: 'Updated_at', type: 'timestamp', nullable: false })
   updatedAt: Date;
+
+  @OneToMany(() => PostLike, like => like.postId)
+  likes: PostLike[];
 }

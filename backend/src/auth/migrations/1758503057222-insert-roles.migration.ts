@@ -16,8 +16,8 @@ export class InsertRolesMigration1758503057222 implements MigrationInterface {
     const roleIds = [1, 2, 3, 4];
 
     await queryRunner.query(`
-      DELETE FROM Roles
-      WHERE Role_id IN (${roleIds.join(', ')});
+      DELETE FROM "Roles"
+      WHERE "Role_id" IN (${roleIds.join(', ')});
     `);
   }
 }

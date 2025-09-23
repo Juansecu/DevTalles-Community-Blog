@@ -1,44 +1,25 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreatePostsTableMigration1758582199106
+export class CreatePostLikesTableMigration1758589644154
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Posts',
+        name: 'Post_likes',
         columns: [
           {
             name: 'Post_id',
             type: 'int',
-            isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment'
+            isPrimary: true
           },
           {
-            name: 'Title',
-            type: 'varchar',
-            length: '100',
-            isNullable: false
-          },
-          {
-            name: 'Body',
-            type: 'text',
-            isNullable: false
-          },
-          {
-            name: 'Banner_url',
-            type: 'varchar',
-            length: '100',
-            isNullable: false
-          },
-          {
-            name: 'Author_id',
+            name: 'User_id',
             type: 'int',
-            isNullable: false
+            isPrimary: true
           },
           {
-            name: 'Posted_at',
+            name: 'Liked_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
             isNullable: false
@@ -53,9 +34,16 @@ export class CreatePostsTableMigration1758582199106
         ],
         foreignKeys: [
           {
-            columnNames: ['Author_id'],
-            referencedTableName: 'Users',
+            columnNames: ['Post_id'],
+            referencedColumnNames: ['Post_id'],
+            referencedTableName: 'Posts',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+          },
+          {
+            columnNames: ['User_id'],
             referencedColumnNames: ['User_id'],
+            referencedTableName: 'Users',
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
           }
@@ -66,6 +54,6 @@ export class CreatePostsTableMigration1758582199106
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Posts', true);
+    await queryRunner.dropTable('Post_likes', true);
   }
 }
