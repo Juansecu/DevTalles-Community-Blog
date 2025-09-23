@@ -8,6 +8,7 @@ import { PostLike } from './entities/post-like.entity';
 import { PostWithLikesViewEntity } from './entities/post-with-likes.view-entity';
 import { Role } from '../auth/entities/role.entity';
 import { Category } from '../categories/entities/category.entity';
+import { SharedModule } from '../shared/shared.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { Category } from '../categories/entities/category.entity';
       PostWithLikesViewEntity,
       Role,
       Category
-    ])
+    ]),
+    SharedModule
   ],
   controllers: [PostsController],
   providers: [PostsService],

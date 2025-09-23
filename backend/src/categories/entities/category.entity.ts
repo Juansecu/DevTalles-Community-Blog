@@ -5,10 +5,12 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  JoinColumn, ManyToMany, JoinTable
+  JoinColumn,
+  ManyToMany,
+  JoinTable
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import {Post} from "../../posts/entities/post.entity";
+import { Post } from '../../posts/entities/post.entity';
 
 @Entity('Categories')
 export class Category {

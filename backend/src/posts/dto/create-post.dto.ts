@@ -3,7 +3,8 @@ import {
   IsNotEmpty,
   IsNumber,
   MaxLength,
-  Min
+  Min,
+  IsBase64
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -19,11 +20,15 @@ export class CreatePostDto {
   @IsNotEmpty()
   body: string;
 
-  @ApiProperty({ description: 'URL del banner', maxLength: 100 })
+  @ApiProperty({
+    description: 'Banner en formato Base64',
+    type: String,
+    format: 'base64'
+  })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(100)
-  bannerUrl: string;
+  @IsBase64()
+  banner: string;
 
   @ApiProperty({
     description: 'IDs de las categorías del post',

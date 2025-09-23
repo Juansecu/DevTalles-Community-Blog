@@ -9,12 +9,14 @@ import { AuthUser } from '../auth/typings/auth-user';
 import { PostLike } from './entities/post-like.entity';
 import { PostWithLikesViewEntity } from './entities/post-with-likes.view-entity';
 import { Category } from '../categories/entities/category.entity';
+import { CloudflareR2Service } from '../shared/services/cloudflare-r2.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    private readonly cloudflareR2Service: CloudflareR2Service,
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
     @InjectRepository(PostLike)
@@ -37,10 +39,16 @@ export class PostsService {
 
     if (!author) throw new NotFoundException('Autor no encontrado');
 
+    const bannerBuffer = Buffer.from(dto.banner, 'base64');
+    const bannerUrl: string = await this.cloudflareR2Service.uploadFile(
+      `banners/${Date.now()}-${Math.random().toString(36).substring(2, 15)}`,
+      bannerBuffer,
+      'image/jpeg'
+    );
     const post = this.postRepository.create({
       title: dto.title,
       body: dto.body,
-      bannerUrl: dto.bannerUrl,
+      bannerUrl: bannerUrl,
       author,
       categories
     });
