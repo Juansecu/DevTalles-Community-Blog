@@ -7,6 +7,7 @@ import { User } from 'src/users/entities/user.entity';
 import { PostLike } from './entities/post-like.entity';
 import { PostWithLikesViewEntity } from './entities/post-with-likes.view-entity';
 import { Role } from '../auth/entities/role.entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { Role } from '../auth/entities/role.entity';
       User,
       PostLike,
       PostWithLikesViewEntity,
-      Role
+      Role,
+      Category
     ])
   ],
   controllers: [PostsController],

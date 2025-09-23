@@ -23,9 +23,11 @@ import {
   ApiParam,
   ApiBearerAuth,
   ApiOkResponse,
-  ApiNotFoundResponse, ApiUnauthorizedResponse, ApiForbiddenResponse
+  ApiNotFoundResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse
 } from '@nestjs/swagger';
-import { Post as PostEntity } from './entities/post.entity';
+import { Post, Post as PostEntity } from './entities/post.entity';
 import type { RequestWithUser } from '../auth/typings/request-with-user';
 import { AuthGuard } from '@nestjs/passport';
 import { AccessGuard } from '../auth/guards/access.guard';
@@ -37,10 +39,16 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @HttpPost()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), AccessGuard)
+  @Access([], ['CREATE_POST'])
   @ApiOperation({ summary: 'Crear un nuevo post' })
   @ApiResponse({ status: 201, description: 'Post creado', type: PostEntity })
-  create(@Body() dto: CreatePostDto) {
-    return this.postsService.create(dto);
+  async create(
+    @Body() dto: CreatePostDto,
+    @Req() request: RequestWithUser
+  ): Promise<Post> {
+    return await this.postsService.create(dto, request.user);
   }
 
   @Get()

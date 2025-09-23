@@ -1,4 +1,4 @@
-import { IsNumber, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCategoryDto {
@@ -7,12 +7,4 @@ export class CreateCategoryDto {
   @IsNotEmpty()
   @MaxLength(50)
   name: string;
-
-  @ApiProperty({
-    description: 'ID del usuario que agrega la categoría',
-    type: Number
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  addedById: number;
 }

@@ -6,11 +6,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  JoinColumn
+  JoinColumn,
+  ManyToMany
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { PostComment } from 'src/post-comments/entities/post-comment.entity';
 import { PostLike } from './post-like.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity('Posts')
 export class Post {
@@ -41,4 +43,7 @@ export class Post {
 
   @OneToMany(() => PostLike, like => like.postId)
   likes: PostLike[];
+
+  @ManyToMany(() => Category, category => category.posts)
+  categories: Category[];
 }

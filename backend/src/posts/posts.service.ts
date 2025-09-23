@@ -8,10 +8,13 @@ import { User } from '../users/entities/user.entity';
 import { AuthUser } from '../auth/typings/auth-user';
 import { PostLike } from './entities/post-like.entity';
 import { PostWithLikesViewEntity } from './entities/post-with-likes.view-entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Injectable()
 export class PostsService {
   constructor(
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
     @InjectRepository(PostLike)
@@ -22,17 +25,24 @@ export class PostsService {
     private readonly userRepository: Repository<User>
   ) {}
 
-  async create(dto: CreatePostDto): Promise<Post> {
-    const author = await this.userRepository.findOne({
-      where: { userId: dto.authorId }
-    });
+  async create(dto: CreatePostDto, user: AuthUser): Promise<Post> {
+    const [author, categories] = await Promise.all([
+      this.userRepository.findOne({
+        where: { userId: user.userId }
+      }),
+      this.categoryRepository.find({
+        where: dto.categoryIds.map(id => ({ categoryId: id }))
+      })
+    ]);
+
     if (!author) throw new NotFoundException('Autor no encontrado');
 
     const post = this.postRepository.create({
       title: dto.title,
       body: dto.body,
       bannerUrl: dto.bannerUrl,
-      author
+      author,
+      categories
     });
 
     return this.postRepository.save(post);

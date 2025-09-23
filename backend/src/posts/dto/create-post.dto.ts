@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsNumber, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  MaxLength,
+  Min
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePostDto {
@@ -19,7 +25,13 @@ export class CreatePostDto {
   @MaxLength(100)
   bannerUrl: string;
 
-  @ApiProperty({ description: 'ID del autor' })
-  @IsNumber()
-  authorId: number;
+  @ApiProperty({
+    description: 'IDs de las categorías del post',
+    type: Number,
+    isArray: true
+  })
+  @IsNumber({}, { each: true })
+  @IsNotEmpty({ each: true })
+  @Min(1, { each: true })
+  categoryIds: number[];
 }
