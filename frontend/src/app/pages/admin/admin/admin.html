@@ -35,21 +35,19 @@
           <tr>
             <td colspan="6" class="no-posts">No hay posts disponibles</td>
           </tr>
-          } @for (post of posts(); track post.id) {
+          } @for (post of posts(); track post.postId) {
           <tr>
-            <td class="post-id">{{ post.id }}</td>
+            <td class="post-id">{{ post.postId }}</td>
             <td class="post-title">{{ post.title }}</td>
             <td class="post-description">
-              {{ post.description.length > 100 ? (post.description | slice:0:100) + '...'
-              : post.description }}
+              {{ post.body.length > 100 ? (post.body | slice:0:100) + '...' : post.body }}
             </td>
             <td class="post-categories">
-              @for (category of post.category; track $index) {
-              <span class="category-tag">{{ category }}</span>
-              }
+              <!-- TODO: Implementar categorías cuando estén disponibles en Post interface -->
+              <span class="category-tag">{{ post.author.username }}</span>
             </td>
             <td class="post-image">
-              <img [src]="post.image" [alt]="post.title" class="thumbnail" />
+              <img [src]="post.bannerUrl" [alt]="post.title" class="thumbnail" />
             </td>
             <td class="post-actions">
               <button class="btn btn-edit" (click)="openEditForm(post)" title="Editar">

@@ -4,7 +4,7 @@
     <section class="post-hero">
       <h1 class="post-title">{{ post()!.title }}</h1>
       <div class="post-image">
-        <img [src]="post()!.image" [alt]="post()!.title" />
+        <img [src]="post()!.bannerUrl" [alt]="post()!.title" />
       </div>
     </section>
 
@@ -25,8 +25,12 @@
               </svg>
             </div>
             <div class="author-details">
-              <span class="author-name">{{ post()!.author }}</span>
-              <span class="post-date">Posted at {{ post()!.publishedAt }}</span>
+              <span class="author-name"
+                >{{ post()!.author.firstName }} {{ post()!.author.lastName }}</span
+              >
+              <span class="post-date"
+                >Posted at {{ post()!.postedAt | date:'short' }}</span
+              >
             </div>
           </div>
 
@@ -58,21 +62,20 @@
                 />
                 }
               </svg>
-              <span class="like-count">{{ post()!.likes || 0 }}</span>
+              <span class="like-count">{{ post()!.likesCount || 0 }}</span>
             </button>
           </div>
         </header>
 
         <!-- Post Content -->
         <div class="post-body">
+          <!-- TODO: Add categories when available in Post interface -->
           <div class="post-categories">
-            @for (category of post()!.categories; track $index) {
-            <span class="category-tag">{{ category }}</span>
-            }
+            <span class="category-tag">By {{ post()!.author.username }}</span>
           </div>
 
           <div class="post-text">
-            @for (paragraph of post()!.content.split('\n\n'); track $index) {
+            @for (paragraph of post()!.body.split('\n\n'); track $index) {
             <p>{{ paragraph }}</p>
             }
           </div>

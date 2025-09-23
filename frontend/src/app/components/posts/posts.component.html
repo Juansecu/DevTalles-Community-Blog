@@ -10,26 +10,27 @@
       <!-- posts list -->
       <div class="posts-list">
         @for (post of posts(); track $index) {
-        <div class="post-card" (click)="postClickeable(post.id)">
+        <div class="post-card" (click)="postClickeable(post.postId)">
           <img
-            src="{{ post.image }}"
-            alt=""
+            src="{{ post.bannerUrl }}"
+            alt="{{ post.title }}"
             style="width: 100%; height: auto; object-fit: contain"
             loading="lazy"
           />
           <div class="post-card-content">
             <h3>{{ post.title }}</h3>
-            <p>{{ post.description }}</p>
+            <p>
+              {{ post.body.substring(0, 150) }}{{ post.body.length > 150 ? '...' : '' }}
+            </p>
             <div class="post-card-footer">
               <div class="category-list">
-                @for (category of post.category; track $index) {
-                <span>{{ category }}</span>
-                }
+                <!-- TODO: Implementar categorías cuando estén disponibles en el modelo Post -->
+                <span>{{ post.author.firstName }} {{ post.author.lastName }}</span>
               </div>
               <button
                 class="like-button-small"
                 [class.liked]="post.isLiked"
-                (click)="togglePostLike(post.id, $event)"
+                (click)="togglePostLike(post.postId, $event)"
               >
                 <svg
                   class="like-icon"
@@ -52,7 +53,7 @@
                   />
                   }
                 </svg>
-                <span class="like-count">{{ post.likes || 0 }}</span>
+                <span class="like-count">{{ post.likesCount || 0 }}</span>
               </button>
             </div>
           </div>
@@ -65,8 +66,8 @@
     <aside class="categories">
       <h3>Categorías</h3>
       <div class="categories-grid">
-        @for (category of allCategories(); track $index) {
-        <span class="category-item">{{ category }}</span>
+        @for (category of categories(); track $index) {
+        <span class="category-item">{{ category.name }}</span>
         }
       </div>
     </aside>

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { PostService } from '../../services/posts.service';
 import { Post, Comment } from '../../interfaces/posts.interface';
 
@@ -8,7 +9,7 @@ import { Post, Comment } from '../../interfaces/posts.interface';
   selector: 'app-post',
   templateUrl: './post.html',
   styleUrls: ['./post.scss'],
-  imports: [ReactiveFormsModule]
+  imports: [ReactiveFormsModule, DatePipe]
 })
 export class SinglePostComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -38,19 +39,8 @@ export class SinglePostComponent implements OnInit {
       const postsData = await this.postService.getPost(postId);
 
       if (postsData) {
-        const fullPost: Post = {
-          id: postsData.id.toString(),
-          title: postsData.title,
-          content: postsData.description,
-          author: 'DevTalles Team',
-          publishedAt: '09/20/2025',
-          image: postsData.image,
-          categories: postsData.category,
-          likes: postsData.likes || 0,
-          isLiked: postsData.isLiked || false
-        };
-
-        this.post.set(fullPost);
+        // The postsData already has the correct Post interface structure
+        this.post.set(postsData);
       } else {
         console.error('Post not found');
         this.post.set(null);
@@ -139,12 +129,12 @@ export class SinglePostComponent implements OnInit {
       const postId = parseInt(this.postId(), 10);
       const result = await this.postService.toggleLike(postId);
 
-      if (result && this.post()) {
+      if (result.success && this.post()) {
         // Actualizar el post con los nuevos datos de likes
         const updatedPost = {
           ...this.post()!,
-          likes: result.likes,
-          isLiked: result.isLiked
+          likesCount: result.likes,
+          isLiked: !this.post()!.isLiked // Toggle the current state
         };
         this.post.set(updatedPost);
       }

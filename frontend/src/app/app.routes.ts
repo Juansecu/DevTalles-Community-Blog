@@ -4,6 +4,7 @@ import { LoginComponent } from './pages/login/login';
 import { RegisterComponent } from './pages/register/register';
 import { SinglePostComponent } from './pages/post/post';
 import { AdminComponent } from './pages/admin/admin/admin';
+import { authGuard, guestGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -12,11 +13,13 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [guestGuard]
   },
   {
     path: 'register',
-    component: RegisterComponent
+    component: RegisterComponent,
+    canActivate: [guestGuard]
   },
   {
     path: 'posts/:id',
@@ -24,6 +27,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: AdminComponent
+    component: AdminComponent,
+    canActivate: [authGuard]
   }
 ];
