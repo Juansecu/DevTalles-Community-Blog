@@ -18,7 +18,7 @@ export class Category {
   name: string;
 
   @ManyToOne(() => User, user => user.categories, { nullable: false })
-  @JoinColumn({ name: 'User_id' })
+  @JoinColumn({ name: 'Added_by' })
   addedBy: User;
 
   @CreateDateColumn({ name: 'Added_at', type: 'timestamp' })

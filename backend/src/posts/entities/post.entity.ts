@@ -19,11 +19,14 @@ export class Post {
   @Column({ name: 'Title', type: 'varchar', length: 100 })
   title: string;
 
-  @Column({ name: 'Body', type: 'text' })
+  @Column({ name: 'Body', type: 'text', nullable: false })
   body: string;
 
   @Column({ name: 'Banner_url', type: 'varchar', length: 100 })
   bannerUrl: string;
+
+  @Column({ name: 'Likes_count', type: 'int', default: 0 })
+  likesCount: number;
 
   @ManyToOne(() => User, user => user.posts, { nullable: false })
   @JoinColumn({ name: 'User_id' })
@@ -32,9 +35,9 @@ export class Post {
   @OneToMany(() => PostComment, comment => comment.post)
   comments: PostComment[];
 
-  @CreateDateColumn({ name: 'Posted_at', type: 'timestamp' })
+  @CreateDateColumn({ name: 'Posted_at', type: 'timestamp', nullable: false })
   postedAt: Date;
 
-  @UpdateDateColumn({ name: 'Updated_at', type: 'timestamp' })
+  @UpdateDateColumn({ name: 'Updated_at', type: 'timestamp', nullable: false })
   updatedAt: Date;
 }
