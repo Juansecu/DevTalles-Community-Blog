@@ -79,7 +79,22 @@ export class PostsService {
   }
 
   async update(postId: number, dto: UpdatePostDto): Promise<Post> {
+    let bannerBuffer: Buffer;
+    let bannerUrl: string;
+
     const post = await this.findOne(postId);
+
+    if (dto.banner) {
+      bannerBuffer = Buffer.from(dto.banner, 'base64');
+      bannerUrl = await this.cloudflareR2Service.uploadFile(
+        `banners/${Date.now()}-${Math.random().toString(36).substring(2, 15)}`,
+        bannerBuffer,
+        'image/jpeg'
+      );
+
+      post.bannerUrl = bannerUrl;
+    }
+
     Object.assign(post, dto);
     return this.postRepository.save(post);
   }

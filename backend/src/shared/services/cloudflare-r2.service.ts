@@ -47,8 +47,10 @@ export class CloudflareR2Service {
 
     await this.s3Client.send(command);
 
-    // Remove the trailing slash if present
-    const domain = this.publicDomain.replace(/\/$/, '');
+    // Remove the protocol and trailing slash if present
+    const domain = this.publicDomain
+      .replace(/^https?:\/\//, '')
+      .replace(/\/$/, '');
     return `https://${domain}/${this.bucketName}/${key}`;
   }
 }

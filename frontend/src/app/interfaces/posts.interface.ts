@@ -39,7 +39,7 @@ export interface Posts extends Post {
   // Alias para compatibilidad con componentes existentes
   id: number;
   description: string;
-  category: string[];
+  categoryIds: string[];
   image: string;
   likes?: number;
 }
@@ -54,15 +54,14 @@ export interface PostsResponse {
 export interface CreatePostDto {
   title: string;
   body: string;
-  bannerUrl: string;
-  authorId: number;
+  banner: string;
   categoryIds: number[];
 }
 
 export interface UpdatePostDto {
   title?: string;
   body?: string;
-  bannerUrl?: string;
+  banner?: string;
   categoryIds?: number[];
 }
 

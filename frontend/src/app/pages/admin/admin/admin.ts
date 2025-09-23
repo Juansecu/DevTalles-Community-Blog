@@ -14,10 +14,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './admin.scss'
 })
 export class AdminComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private postService = inject(PostService);
-  private authService = inject(AuthService);
-  private categoriesService = inject(CategoriesService);
+  private readonly fb = inject(FormBuilder);
+  private readonly postService = inject(PostService);
+  private readonly authService = inject(AuthService);
+  private readonly categoriesService = inject(CategoriesService);
 
   posts = signal<Post[]>([]);
   categories = signal<Category[]>([]);
@@ -163,6 +163,12 @@ export class AdminComponent implements OnInit {
 
   async onSubmit() {
     if (this.postForm.valid && (this.selectedImage() || this.isEditing())) {
+      // Only encode and patch the image if a new image is selected
+      if (this.selectedImage()) {
+        const base64 = await this.encodeFileToBase64(this.selectedImage()!);
+        this.postForm.patchValue({ image: base64 });
+      }
+
       const formData = this.postForm.value;
 
       console.log('Form data:', formData);
@@ -198,8 +204,7 @@ export class AdminComponent implements OnInit {
       const postData: CreatePostDto = {
         title: formData.title,
         body: formData.description, // description -> body
-        bannerUrl: imageUrl, // image -> bannerUrl
-        authorId: currentUser.userId,
+        banner: await this.encodeFileToBase64(this.selectedImage()!),
         categoryIds: formData.categoryIds || [] // Usar directamente el array
       };
 
@@ -210,12 +215,12 @@ export class AdminComponent implements OnInit {
           const updateData: UpdatePostDto = {
             title: formData.title,
             body: formData.description,
-            bannerUrl: imageUrl,
+            banner: await this.encodeFileToBase64(this.selectedImage()!),
             categoryIds: formData.categoryIds || []
           };
 
           const result = await this.postService.updatePost(
-            this.selectedPost()!.postId, // id -> postId
+            this.selectedPost()!.postId,
             updateData
           );
           if (result) {
@@ -269,5 +274,18 @@ export class AdminComponent implements OnInit {
   hasFieldError(fieldName: string): boolean {
     const field = this.postForm.get(fieldName);
     return !!(field?.invalid && field?.touched);
+  }
+
+  private encodeFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        const base64 = result.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
   }
 }
