@@ -240,4 +240,112 @@ export class AuthService {
     const user = this._currentUser();
     return user?.userId || null;
   }
+
+  /**
+   * Iniciar login con Discord
+   * Redirige al usuario al endpoint de autorización de Discord
+   */
+  async loginWithDiscord(): Promise<void> {
+    try {
+      console.log('Iniciando login con Discord...');
+      // Guardar la URL actual para regresar después del login
+      const returnUrl = this.router.url;
+      localStorage.setItem('discord_return_url', returnUrl);
+
+      // Redirigir al endpoint de Discord
+      window.location.href = `${this.apiUrl}/auth/discord`;
+    } catch (error) {
+      console.error('Error iniciando login con Discord:', error);
+    }
+  }
+
+  /**
+   * Manejar el callback de Discord
+   * Procesa la respuesta de autenticación y extrae el token
+   */
+  async handleDiscordCallback(): Promise<AuthResponse> {
+    try {
+      console.log('Procesando callback de Discord...');
+
+      const currentUrl = new URL(window.location.href);
+      const error = currentUrl.searchParams.get('error');
+
+      if (error) {
+        return {
+          success: false,
+          message: 'Error en la autenticación con Discord',
+          error: error
+        };
+      }
+      const headers = this.getHeaders();
+
+      // Si no hay error, intentamos obtener los datos del usuario desde el backend
+      // El backend debería haber establecido una sesión o token
+
+      const response = await firstValueFrom(
+        this.http.get<LoginResponse>(`${this.apiUrl}/auth/discord/callback`, {
+          headers,
+          withCredentials: true
+        })
+      );
+
+      console.log(response);
+
+      this._currentUser.set(response.user);
+      this._token.set(response.token);
+      this._isAuthenticated.set(true);
+
+      this.saveAuth(response.user, response.token);
+
+      console.log('Usuario autenticado con Discord:', response.user);
+      console.log('Token guardado:', response.token);
+
+      return {
+        success: true,
+        user: response.user,
+        token: response.token,
+        message: 'Autenticación con Discord exitosa'
+      };
+    } catch (error: unknown) {
+      console.error('Error en callback de Discord:', error);
+
+      let errorMessage = 'Error en la autenticación con Discord';
+
+      if (error && typeof error === 'object' && 'error' in error) {
+        const apiError = error as {
+          error?: { message?: string | string[] };
+          status?: number;
+        };
+
+        if (apiError?.error?.message) {
+          if (Array.isArray(apiError.error.message)) {
+            errorMessage = apiError.error.message.join(', ');
+          } else {
+            errorMessage = apiError.error.message;
+          }
+        } else if (apiError?.status === 401) {
+          errorMessage = 'No se pudo autenticar con Discord';
+        } else if (apiError?.status === 400) {
+          errorMessage = 'Error en los datos de Discord';
+        } else if (apiError?.status === 0) {
+          errorMessage = 'No se pudo conectar con el servidor';
+        }
+      }
+
+      return {
+        success: false,
+        message: 'Error en la autenticación con Discord',
+        error: errorMessage
+      };
+    }
+  }
+
+  /**
+   * Obtener la URL de retorno después del login con Discord
+   */
+  getDiscordReturnUrl(): string {
+    const returnUrl = localStorage.getItem('discord_return_url') || '/';
+    localStorage.removeItem('discord_return_url');
+    return returnUrl;
+  }
 }

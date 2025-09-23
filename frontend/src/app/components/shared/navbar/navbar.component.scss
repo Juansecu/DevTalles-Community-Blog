@@ -170,6 +170,19 @@ div {
           border-bottom: 1px solid white;
           // background-color: #e5e7eb;
         }
+
+        .discord-item {
+          color: #5865f2;
+          font-weight: 500;
+
+          &:hover {
+            background-color: #f0f2ff;
+          }
+
+          svg {
+            color: #5865f2;
+          }
+        }
       }
     }
   }

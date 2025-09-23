@@ -73,6 +73,14 @@ export class NavbarComponent {
   }
 
   /**
+   * Iniciar login con Discord
+   */
+  loginWithDiscord(): void {
+    this.closeUserDropdown();
+    this.authService.loginWithDiscord();
+  }
+
+  /**
    * Escuchar clics fuera del dropdown para cerrarlo
    */
   @HostListener('document:click', ['$event'])
